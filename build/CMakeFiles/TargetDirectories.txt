@@ -1,0 +1,3 @@
+/home/admin/source/webserver/build/CMakeFiles/rebuild_cache.dir
+/home/admin/source/webserver/build/CMakeFiles/buffer_test.dir
+/home/admin/source/webserver/build/CMakeFiles/edit_cache.dir
