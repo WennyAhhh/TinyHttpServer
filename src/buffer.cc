@@ -2,7 +2,7 @@
 
 void Buffer::MakeSpace(size_t len)
 {
-    // std::cout << buffer_.capacity() << std::endl;
+    // std::cout << buffer_.capacity() << std::endl ;
     if (WriteAbleBytes() + PrependAbleBytes() < len + cheap_prepend)
     {
         buffer_.resize(writer_index_ + len);
