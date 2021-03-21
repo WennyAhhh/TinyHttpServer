@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/admin/source/webserver
+CMAKE_SOURCE_DIR = /home/admin/source/TinyHttpServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/admin/source/webserver/build
+CMAKE_BINARY_DIR = /home/admin/source/TinyHttpServer/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/buffer_test.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/buffer_test.dir/flags.make
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/src/buffer.cc.o: ../src/buffer.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/webserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/buffer_test.dir/src/buffer.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/buffer.cc.o -c /home/admin/source/webserver/src/buffer.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/buffer_test.dir/src/buffer.cc.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/buffer.cc.o -c /home/admin/source/TinyHttpServer/src/buffer.cc
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/src/buffer.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/webserver/src/buffer.cc > CMakeFiles/buffer_test.dir/src/buffer.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/buffer.cc > CMakeFiles/buffer_test.dir/src/buffer.cc.i
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/src/buffer.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/webserver/src/buffer.cc -o CMakeFiles/buffer_test.dir/src/buffer.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/buffer.cc -o CMakeFiles/buffer_test.dir/src/buffer.cc.s
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/buffer_test.dir/src/buffer.cc.o.provides.build: CMakeFiles/buffer_tes
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/test/log_test.cc.o: ../test/log_test.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/webserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/buffer_test.dir/test/log_test.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/test/log_test.cc.o -c /home/admin/source/webserver/test/log_test.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/buffer_test.dir/test/log_test.cc.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/test/log_test.cc.o -c /home/admin/source/TinyHttpServer/test/log_test.cc
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/test/log_test.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/webserver/test/log_test.cc > CMakeFiles/buffer_test.dir/test/log_test.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/test/log_test.cc > CMakeFiles/buffer_test.dir/test/log_test.cc.i
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/test/log_test.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/webserver/test/log_test.cc -o CMakeFiles/buffer_test.dir/test/log_test.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/test/log_test.cc -o CMakeFiles/buffer_test.dir/test/log_test.cc.s
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/buffer_test.dir/test/log_test.cc.o.provides.build: CMakeFiles/buffer_
 
 CMakeFiles/buffer_test.dir/src/log.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/src/log.cc.o: ../src/log.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/webserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/buffer_test.dir/src/log.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/log.cc.o -c /home/admin/source/webserver/src/log.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/buffer_test.dir/src/log.cc.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/log.cc.o -c /home/admin/source/TinyHttpServer/src/log.cc
 
 CMakeFiles/buffer_test.dir/src/log.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/src/log.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/webserver/src/log.cc > CMakeFiles/buffer_test.dir/src/log.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/log.cc > CMakeFiles/buffer_test.dir/src/log.cc.i
 
 CMakeFiles/buffer_test.dir/src/log.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/src/log.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/webserver/src/log.cc -o CMakeFiles/buffer_test.dir/src/log.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/log.cc -o CMakeFiles/buffer_test.dir/src/log.cc.s
 
 CMakeFiles/buffer_test.dir/src/log.cc.o.requires:
 
@@ -143,7 +143,7 @@ buffer_test: CMakeFiles/buffer_test.dir/test/log_test.cc.o
 buffer_test: CMakeFiles/buffer_test.dir/src/log.cc.o
 buffer_test: CMakeFiles/buffer_test.dir/build.make
 buffer_test: CMakeFiles/buffer_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/admin/source/webserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable buffer_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable buffer_test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/buffer_test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -162,6 +162,6 @@ CMakeFiles/buffer_test.dir/clean:
 .PHONY : CMakeFiles/buffer_test.dir/clean
 
 CMakeFiles/buffer_test.dir/depend:
-	cd /home/admin/source/webserver/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/admin/source/webserver /home/admin/source/webserver /home/admin/source/webserver/build /home/admin/source/webserver/build /home/admin/source/webserver/build/CMakeFiles/buffer_test.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/admin/source/TinyHttpServer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/admin/source/TinyHttpServer /home/admin/source/TinyHttpServer /home/admin/source/TinyHttpServer/build /home/admin/source/TinyHttpServer/build /home/admin/source/TinyHttpServer/build/CMakeFiles/buffer_test.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/buffer_test.dir/depend
 

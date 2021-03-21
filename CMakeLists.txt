@@ -11,6 +11,8 @@ set(SOURCES
     src/log.cc
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(buffer_test

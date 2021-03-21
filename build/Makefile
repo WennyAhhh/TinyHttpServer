@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/admin/source/webserver
+CMAKE_SOURCE_DIR = /home/admin/source/TinyHttpServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/admin/source/webserver/build
+CMAKE_BINARY_DIR = /home/admin/source/TinyHttpServer/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/webserver/build/CMakeFiles /home/admin/source/webserver/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/TinyHttpServer/build/CMakeFiles /home/admin/source/TinyHttpServer/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/webserver/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/TinyHttpServer/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

@@ -9,6 +9,7 @@ int main()
     cout << "xx" << endl;
     Log::Instance()->init("./log", true, true);
     cout << "yy" << endl;
+    sleep(1);
     while (1)
     {
         sleep(0.1);

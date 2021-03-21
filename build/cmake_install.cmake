@@ -1,4 +1,4 @@
-# Install script for directory: /home/admin/source/webserver
+# Install script for directory: /home/admin/source/TinyHttpServer
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/admin/source/webserver/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/admin/source/TinyHttpServer/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
