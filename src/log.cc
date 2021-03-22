@@ -1,6 +1,6 @@
 #include "log.h"
 
-Log::Log() : thread_(std::bind(&Log::threadFunc, this), "Log"),
+Log::Log() : thread_(std::bind(&Log::ThreadFunc, this), "Log"),
              curr_buffer_(std::make_unique<Buffer>()),
              next_buffer_(std::make_unique<Buffer>())
 {
@@ -17,11 +17,11 @@ void Log::init(
     // path_ = path.data();
     time_stamp_ = p_timestamp;
     date_stamp_ = p_datestamp;
-    switch_log();
+    SwitchLog();
     running_ = true;
 }
 
-void Log::switch_log()
+void Log::SwitchLog()
 {
     std::lock_guard<std::mutex> lk(mtx_);
     // 如果fp已经存在， 那么就需要关闭， 并且将已经存入全部去除
@@ -77,7 +77,7 @@ void Log::append(const char *logline, int len)
     }
 }
 
-void Log::threadFunc()
+void Log::ThreadFunc()
 {
     assert(running_ == true);
     auto newBuffer1 = std::make_unique<Buffer>();

@@ -2,13 +2,10 @@
 #include <unistd.h>
 #include "../src/log.h"
 
-using namespace std;
-
 int main()
 {
-    cout << "xx" << endl;
+    std::cout << "xx" << std::endl;
     Log::Instance()->init("./log", true, true);
-    cout << "yy" << endl;
     sleep(1);
     while (1)
     {

@@ -60,15 +60,15 @@ include CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/src/buffer.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/src/buffer.cc.o: ../src/buffer.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/buffer_test.dir/src/buffer.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/buffer.cc.o -c /home/admin/source/TinyHttpServer/src/buffer.cc
+	/usr/bin/g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/buffer.cc.o -c /home/admin/source/TinyHttpServer/src/buffer.cc
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/src/buffer.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/buffer.cc > CMakeFiles/buffer_test.dir/src/buffer.cc.i
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/buffer.cc > CMakeFiles/buffer_test.dir/src/buffer.cc.i
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/src/buffer.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/buffer.cc -o CMakeFiles/buffer_test.dir/src/buffer.cc.s
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/buffer.cc -o CMakeFiles/buffer_test.dir/src/buffer.cc.s
 
 CMakeFiles/buffer_test.dir/src/buffer.cc.o.requires:
 
@@ -84,15 +84,15 @@ CMakeFiles/buffer_test.dir/src/buffer.cc.o.provides.build: CMakeFiles/buffer_tes
 CMakeFiles/buffer_test.dir/test/log_test.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/test/log_test.cc.o: ../test/log_test.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/buffer_test.dir/test/log_test.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/test/log_test.cc.o -c /home/admin/source/TinyHttpServer/test/log_test.cc
+	/usr/bin/g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/test/log_test.cc.o -c /home/admin/source/TinyHttpServer/test/log_test.cc
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/test/log_test.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/test/log_test.cc > CMakeFiles/buffer_test.dir/test/log_test.cc.i
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/test/log_test.cc > CMakeFiles/buffer_test.dir/test/log_test.cc.i
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/test/log_test.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/test/log_test.cc -o CMakeFiles/buffer_test.dir/test/log_test.cc.s
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/test/log_test.cc -o CMakeFiles/buffer_test.dir/test/log_test.cc.s
 
 CMakeFiles/buffer_test.dir/test/log_test.cc.o.requires:
 
@@ -108,15 +108,15 @@ CMakeFiles/buffer_test.dir/test/log_test.cc.o.provides.build: CMakeFiles/buffer_
 CMakeFiles/buffer_test.dir/src/log.cc.o: CMakeFiles/buffer_test.dir/flags.make
 CMakeFiles/buffer_test.dir/src/log.cc.o: ../src/log.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/buffer_test.dir/src/log.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/log.cc.o -c /home/admin/source/TinyHttpServer/src/log.cc
+	/usr/bin/g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/buffer_test.dir/src/log.cc.o -c /home/admin/source/TinyHttpServer/src/log.cc
 
 CMakeFiles/buffer_test.dir/src/log.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/buffer_test.dir/src/log.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/log.cc > CMakeFiles/buffer_test.dir/src/log.cc.i
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/admin/source/TinyHttpServer/src/log.cc > CMakeFiles/buffer_test.dir/src/log.cc.i
 
 CMakeFiles/buffer_test.dir/src/log.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/buffer_test.dir/src/log.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/log.cc -o CMakeFiles/buffer_test.dir/src/log.cc.s
+	/usr/bin/g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/admin/source/TinyHttpServer/src/log.cc -o CMakeFiles/buffer_test.dir/src/log.cc.s
 
 CMakeFiles/buffer_test.dir/src/log.cc.o.requires:
 

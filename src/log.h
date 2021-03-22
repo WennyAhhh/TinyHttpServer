@@ -64,7 +64,7 @@ public:
 
 private:
     Log();
-    void threadFunc();
+    void ThreadFunc();
     std::string TimeStamp() noexcept
     {
         char str[9];
@@ -81,7 +81,7 @@ private:
         strftime(str, 11, "%Y.%m.%d", curr_time);
         return str;
     }
-    void switch_log();
+    void SwitchLog();
     void append(const char *logline, int len);
 
     FILE *fp_;
@@ -105,7 +105,7 @@ private:
     {                                                                                                                                       \
         char _buf[1024] = {0};                                                                                                              \
         snprintf(_buf, sizeof(_buf), "[%s:%s:%d][%s]" fmt "\n", __FILE__, __FUNCTION__, __LINE__, Log::LEVEL[level].data(), ##__VA_ARGS__); \
-        Log::Instance()->write(string(_buf));                                                                                               \
+        Log::Instance()->write(std::string(_buf));                                                                                          \
     } while (0);
 
 #define LOG_DEBUG(fmt, ...)        \
