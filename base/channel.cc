@@ -17,7 +17,7 @@ void Channel::HandleEvent()
     {
         LOG_WARN("Channel::handle_event() POLLNVAL");
     }
-    if (revents_ & (POLLERR | POLLNVAL))
+    if (revents_ & (PollBaseR | POLLNVAL))
     {
         if (error_call_back_)
         {
@@ -42,7 +42,7 @@ void Channel::HandleEvent()
     }
 }
 
-// update用于更新 poller里面的channel， 可以通过channel中的fd进行检索
+// update用于更新 PollBase里面的channel， 可以通过channel中的fd进行检索
 void Channel::update()
 {
     //loop_->updateChannel(this);

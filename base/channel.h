@@ -38,7 +38,7 @@ public:
         return events_;
     }
 
-    void set_events(int _revents)
+    void set_revents(int _revents)
     {
         revents_ = _revents;
     }
@@ -79,7 +79,7 @@ private:
     int events_;
     //
     int revents_;
-    // channel在poller中拥有的下标
+    // channel在PollBase中拥有的下标
     int index_;
 
     EventCallBack read_call_back_;

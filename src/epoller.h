@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <sys/epoll.h>
 
-class Epoller
+class EPoller
 {
 public:
 };

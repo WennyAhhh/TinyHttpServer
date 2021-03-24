@@ -12,7 +12,7 @@ using std::string;
 
 class HeapTimer;
 class ThreadPool;
-class Epoller;
+class EPollBase;
 class HttpConn;
 
 class WebServer {
@@ -42,7 +42,7 @@ private:
 
     std::unique_ptr<HeapTimer> timer_;
     std::unique_ptr<ThreadPool> threadpool_;
-    std::unique_ptr<Epoller> epoller_;
+    std::unique_ptr<EPollBase> ePollBase_;
     std::unordered_map<int, HttpConn> users_;
     
 };

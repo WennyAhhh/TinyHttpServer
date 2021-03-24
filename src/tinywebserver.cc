@@ -9,7 +9,7 @@ WebServer::WebServer(
     bool openLog, int logLevel, int logQueSize) : port_(port), openLinger_(optLinger), timeoutMS_(timeoutMS), isClose_(false),
                                                   timer_(make_unique<HeapTimer>()),
                                                   threadpool_(make_unique<ThreadPool>(threadNum)),
-                                                  epoller_(make_unique<Epoller>())
+                                                  ePollBase_(make_unique<EPollBase>())
 {
         srcDir_ = getcwd(nullptr, 256);
         assert(srcDir_.data());
