@@ -1,30 +1,43 @@
 #include "eventloop.h"
 
-thread_local std::shared_ptr<EventLoop> LoopInThisThread = nullptr;
+thread_local EventLoop *LoopInThisThread = nullptr;
 
 EventLoop::EventLoop() : looping_(false),
                          thread_id(std::this_thread::get_id())
 {
-    LOG_INFO("EventLoop created %p %lld", this, thread_id);
+    LOG_INFO("EventLoop created %p", this);
     if (LoopInThisThread != nullptr)
     {
-        LOG_ERROR("Another EventLoop %s exits in this thread %lld ", LoopInThisThread, thread_id);
+        printf("is not nullptr\n");
+        LOG_ERROR("Another EventLoop %p exits in this thread ", LoopInThisThread);
     }
     else
     {
-        LoopInThisThread = std::unique_ptr<EventLoop>(this);
+        LoopInThisThread = this;
     }
+}
+
+const EventLoop *EventLoop::getEventOfCurrentThread()
+{
+    return LoopInThisThread;
 }
 
 EventLoop::~EventLoop()
 {
     assert(!looping_);
-    // 对月thread_local， 如果线程结束了，那么自然也会因为智能指针的原因释放
+    LoopInThisThread = nullptr;
 }
 
-std::shared_ptr<EventLoop> EventLoop::GetEventLoopCurrentThread()
+void EventLoop::loop()
 {
-    return LoopInThisThread;
+    assert(!looping_);
+    AssertInLoop();
+    looping_ = true;
+    //::poll(NULL, 0, 2);
+    sleep(5);
+    Log::Instance()->stop();
+    LOG_INFO("EventLoop %p stop", this);
+    looping_ = false;
 }
 
 bool EventLoop::IsInLoopThread()
@@ -36,6 +49,5 @@ void EventLoop::AssertInLoop()
 {
     if (!IsInLoopThread())
     {
-        AbortNotLoopThread();
     }
 }

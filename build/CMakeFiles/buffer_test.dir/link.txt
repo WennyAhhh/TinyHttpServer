@@ -1,1 +1,1 @@
-/usr/bin/g++-7   -pthread   CMakeFiles/buffer_test.dir/src/buffer.cc.o CMakeFiles/buffer_test.dir/test/log_test.cc.o CMakeFiles/buffer_test.dir/src/log.cc.o  -o buffer_test 
+/usr/bin/g++-7   -pthread -g   CMakeFiles/buffer_test.dir/src/buffer.cc.o CMakeFiles/buffer_test.dir/test/log_test.cc.o CMakeFiles/buffer_test.dir/src/log.cc.o  -o buffer_test 

@@ -1,5 +1,11 @@
+#pragma once
+#ifndef EVENTLOOP_H
+#define EVENTLOOP_H
 #include <thread>
 #include <memory>
+#include <unistd.h>
+#include <cassert>
+#include <sys/poll.h>
 #include "../src/log.h"
 
 class EventLoop
@@ -11,11 +17,10 @@ public:
     void loop();
     void AssertInLoop();
     bool IsInLoopThread();
-    void AbortNotLoopThread();
-    std::shared_ptr<EventLoop> GetEventLoopCurrentThread();
+    const EventLoop *EventLoop::getEventOfCurrentThread();
 
 private:
     std::thread::id thread_id;
     bool looping_;
-    std::atomic<int> res;
 };
+#endif

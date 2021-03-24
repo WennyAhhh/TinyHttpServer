@@ -39,16 +39,12 @@ void Log::SwitchLog()
     }
     std::string file_name = DateDtamp() + "." + std::to_string(cnt) + ".log";
     std::string file_path = path_ + std::string("/") + file_name;
-    printf("%s\n", file_path.data());
     fp_ = fopen(file_path.data(), "a");
-    printf("%s %d\n", file_path.data());
-    printf("path: %s\n", path_);
     mkdir(path_, 0777);
     if (fp_ == nullptr)
     {
         mkdir(path_, 0777);
         fp_ = fopen(file_path.data(), "a");
-        printf("%s %d\n", file_path.data());
     }
     is_open_ = true;
     assert(fp_ != nullptr);
@@ -89,7 +85,8 @@ void Log::ThreadFunc()
             std::unique_lock<std::mutex> lk(mtx_);
             if (buffer_.empty())
             {
-                cond_.wait(lk, [=] { return !buffer_.empty(); });
+                //cond_.wait(lk, [=] { return !buffer_.empty(); });
+                cond_.wait(lk);
             }
             buffer_.push_back(std::move(curr_buffer_));
             curr_buffer_ = std::move(newBuffer1);

@@ -1,7 +1,7 @@
 # TinyHttpServer
 
 ## 进度
-    LOG多线程日志库， 基本功能实现， 未实现自动切换LOG文件
+    LOG多线程日志库， 基本功能实现， 未实现自动切换LOG文件 ctrl+c 信号
     Buffer缓冲
 ## 后续
     线程池
