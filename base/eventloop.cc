@@ -1,10 +1,13 @@
 #include "eventloop.h"
 #include "pollbase.h"
 #include "channel.h"
+#include "epoller.h"
 
 thread_local EventLoop *LoopInThisThread = nullptr;
 
 EventLoop::EventLoop() : looping_(false),
+                         quit_(false),
+                         pollbase_(new Epoller(this)),
                          thread_id_(std::this_thread::get_id())
 {
     LOG_INFO("EventLoop created %p", this);

@@ -17,7 +17,7 @@ void Channel::HandleEvent()
     {
         LOG_WARN("Channel::handle_event() POLLNVAL");
     }
-    if (revents_ & (PollBaseR | POLLNVAL))
+    if (revents_ & (POLLERR | POLLNVAL))
     {
         if (error_call_back_)
         {
