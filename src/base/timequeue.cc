@@ -9,11 +9,12 @@ TimerQueue::~TimerQueue()
     clear();
 }
 
-void TimerQueue::add_timer(int node_id, int interval, TimeroutCallBack cb)
+TimerNode TimerQueue::add_timer(int node_id, int interval, TimerOutCallBack cb)
 {
     assert(node_id >= 0);
     TimerNode node({node_id, Clock::now() + std::chrono::milliseconds(interval), cb});
     timer_list.push(node_id, node);
+    return node;
 }
 
 void TimerQueue::clear()
