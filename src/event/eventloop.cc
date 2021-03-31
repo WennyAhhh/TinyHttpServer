@@ -2,13 +2,26 @@
 #include "pollbase.h"
 #include "channel.h"
 #include "epoller.h"
+#include "../base/timequeue.h"
 
 thread_local EventLoop *LoopInThisThread = nullptr;
 
-EventLoop::EventLoop() : looping_(false),
-                         quit_(false),
-                         pollbase_(new Epoller(this)),
-                         thread_id_(std::this_thread::get_id())
+int createEventfd()
+{
+    int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    if (evtfd < 0)
+    {
+        LOG_ERROR("Failed in eventfd");
+        abort();
+    }
+    return evtfd;
+}
+
+EventLoop::EventLoop() : pollbase_(new Epoller(this)),
+                         thread_id_(std::this_thread::get_id()),
+                         wakefd_(createEventfd()),
+                         wake_channel(std::make_unique<Channel>(this, wakefd_)),
+                         timer_queue_(std::make_unique<TimerQueue>(this))
 {
     LOG_INFO("EventLoop created %p", this);
     if (LoopInThisThread != nullptr)
@@ -20,17 +33,24 @@ EventLoop::EventLoop() : looping_(false),
     {
         LoopInThisThread = this;
     }
+    wake_channel->set_read_cb(std::bind(EventLoop::handle_read_, this));
+    wake_channel->enable_reading();
 }
 
 EventLoop::~EventLoop()
 {
     assert(!looping_);
+    ::close(wakefd_);
     LoopInThisThread = nullptr;
 }
 
 void EventLoop::quit()
 {
     quit_ = true;
+    if (!is_in_loop_thread())
+    {
+        wakeup_();
+    }
 }
 
 void EventLoop::update_channel(Channel *channel)
@@ -62,8 +82,8 @@ void EventLoop::loop()
         {
             pItem->handle_event();
         }
+        dopending_func();
     }
-    sleep(5);
     LOG_INFO("EventLoop %p stop", this);
     looping_ = false;
 }
@@ -79,4 +99,72 @@ void EventLoop::assert_in_loop()
     {
         LOG_ERROR("error");
     }
+}
+
+TimerNode EventLoop::run_after(int node_id, int delay, TimerOutCallBack cb)
+{
+    return timer_queue_->add_timer(node_id, delay, cb);
+}
+
+void EventLoop::cancel(int node_id)
+{
+    timer_queue_->del(node_id);
+}
+
+void EventLoop::run_in_loop(Functor cb)
+{
+    if (is_in_loop_thread)
+    {
+        cb();
+    }
+    else
+    {
+        queue_in_loop_(std::move(cb));
+    }
+}
+
+void EventLoop::queue_in_loop_(Functor cb)
+{
+    {
+        std::lock_guard<std::mutex> lk(mtx_);
+        pending_func_.push_back(cb);
+    }
+    if (!is_in_loop_thread() || calling_)
+    {
+        wakeup_();
+    }
+}
+
+void EventLoop::wakeup_()
+{
+    ssize_t wake_data = 1;
+    if (::write(wakefd_, &wake_data, sizeof wake_data) != 1)
+    {
+        LOG_ERROR("EventLoop::wakeup() ");
+    }
+}
+
+void EventLoop::handle_read_()
+{
+    ssize_t wake_data = 1;
+    if (::read(wakefd_, &wake_data, sizeof wake_data) != 1)
+    {
+        LOG_ERROR("EventLoop::read()");
+    }
+}
+
+void EventLoop::dopending_func()
+{
+    std::vector<Functor> functors;
+    calling_ = true;
+    {
+        std::lock_guard<std::mutex> lk(mtx_);
+        functors.swap(pending_func_);
+    }
+
+    for (const Functor &functor : functors)
+    {
+        functor();
+    }
+    calling_ = false;
 }

@@ -5,7 +5,7 @@
 #include <functional>
 #include <chrono>
 
-typedef std::function<void()> TimeOutCallBack;
+typedef std::function<void()> TimerOutCallBack;
 typedef std::chrono::high_resolution_clock Clock;
 typedef Clock::time_point TimerStamp;
 
@@ -14,7 +14,7 @@ class TimerNode
 public:
     int node_id;
     TimerStamp timer;
-    TimeOutCallBack cb;
+    TimerOutCallBack cb;
     bool operator==(const TimerNode &rhs)
     {
         // 仅仅判断时间
