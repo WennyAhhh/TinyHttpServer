@@ -33,16 +33,16 @@ void EventLoop::quit()
     quit_ = true;
 }
 
-void EventLoop::UpdateChannel(Channel *channel)
+void EventLoop::update_channel(Channel *channel)
 {
     // channel中保存的EventLoop是否和channel保存的一样
     assert(channel->ownerLoop() == this);
     // 判断是否当前线程是否与创建时的线程一样
-    AssertInLoop();
-    pollbase_->UpdateChannel(channel);
+    assert_in_loop();
+    pollbase_->update_channel(channel);
 }
 
-const EventLoop *EventLoop::getEventOfCurrentThread()
+const EventLoop *EventLoop::get_curthread()
 {
     return LoopInThisThread;
 }
@@ -50,7 +50,7 @@ const EventLoop *EventLoop::getEventOfCurrentThread()
 void EventLoop::loop()
 {
     assert(!looping_);
-    AssertInLoop();
+    assert_in_loop();
     looping_ = true;
     quit_ = false;
     while (!quit_)
@@ -60,7 +60,7 @@ void EventLoop::loop()
         pollbase_->poll(PollTimeMs, &active_channels_);
         for (auto &pItem : active_channels_)
         {
-            pItem->HandleEvent();
+            pItem->handle_event();
         }
     }
     sleep(5);
@@ -68,14 +68,14 @@ void EventLoop::loop()
     looping_ = false;
 }
 
-bool EventLoop::IsInLoopThread()
+bool EventLoop::is_in_loop_thread()
 {
     return thread_id_ == std::this_thread::get_id();
 }
 
-void EventLoop::AssertInLoop()
+void EventLoop::assert_in_loop()
 {
-    if (!IsInLoopThread())
+    if (!is_in_loop_thread())
     {
         LOG_ERROR("error");
     }

@@ -9,7 +9,7 @@ Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
 {
 }
 
-void Channel::HandleEvent()
+void Channel::handle_event()
 {
     // 分发事件
     // 文件描述符没有打开
@@ -45,5 +45,5 @@ void Channel::HandleEvent()
 // update用于更新 PollBase里面的channel， 可以通过channel中的fd进行检索
 void Channel::update()
 {
-    //loop_->updateChannel(this);
+    loop_->update_channel(this);
 }

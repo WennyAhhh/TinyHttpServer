@@ -19,7 +19,7 @@ class Log
 public:
     static constexpr int SIZE = 4000;
     inline static const std::string LEVEL[] = {"debug", "info", "warn", "error"};
-    static Log *Instance()
+    static Log *instance()
     {
         static Log log;
         return &log;
@@ -36,7 +36,7 @@ public:
         const std::string_view path,
         bool p_TimerStamp,
         bool p_datastamp);
-    bool is_Open()
+    bool is_open()
     {
         return is_open_;
     }
@@ -52,11 +52,11 @@ public:
         std::string mess;
         if (date_stamp_)
         {
-            mess += "[" + DateDtamp() + "] ";
+            mess += "[" + datestamp() + "] ";
         }
         if (time_stamp_)
         {
-            mess += "[" + TimerStamp() + "] ";
+            mess += "[" + timerstamp() + "] ";
         }
         mess += str;
         append(mess.data(), mess.size());
@@ -64,8 +64,8 @@ public:
 
 private:
     Log();
-    void ThreadFunc();
-    std::string TimerStamp() noexcept
+    void thread_func();
+    std::string timerstamp() noexcept
     {
         char str[9];
         time_t t = time(0);
@@ -73,7 +73,7 @@ private:
         strftime(str, 9, "%H:%M:%S", curr_time);
         return str;
     }
-    std::string DateDtamp() noexcept
+    std::string datestamp() noexcept
     {
         char str[11];
         time_t t = time(0);
@@ -81,7 +81,7 @@ private:
         strftime(str, 11, "%Y.%m.%d", curr_time);
         return str;
     }
-    void SwitchLog();
+    void switch_log();
     void append(const char *logline, int len);
 
     FILE *fp_;
@@ -105,7 +105,7 @@ private:
     {                                                                                                                                       \
         char _buf[1024] = {0};                                                                                                              \
         snprintf(_buf, sizeof(_buf), "[%s:%s:%d][%s]" fmt "\n", __FILE__, __FUNCTION__, __LINE__, Log::LEVEL[level].data(), ##__VA_ARGS__); \
-        Log::Instance()->write(std::string(_buf));                                                                                          \
+        Log::instance()->write(std::string(_buf));                                                                                          \
     } while (0);
 
 #define LOG_DEBUG(fmt, ...)        \

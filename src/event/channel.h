@@ -16,16 +16,16 @@ public:
     typedef std::function<void()> EventCallBack;
     Channel(EventLoop *loop, int fd);
 
-    void HandleEvent();
-    void SetReadCallBack(const EventCallBack &cb)
+    void handle_event();
+    void set_read_cb(const EventCallBack &cb)
     {
         read_call_back_ = cb;
     }
-    void SetWriteCallBack(const EventCallBack &cb)
+    void set_write_cb(const EventCallBack &cb)
     {
         write_call_back_ = cb;
     }
-    void SetErrorCallBack(const EventCallBack &cb)
+    void set_error_cb(const EventCallBack &cb)
     {
         error_call_back_ = cb;
     }
@@ -42,11 +42,11 @@ public:
     {
         revents_ = _revents;
     }
-    bool IsNoneEvent() const
+    bool is_none_event() const
     {
         return events_ == kNoneEvent;
     }
-    void EnableReading()
+    void enable_reading()
     {
         events_ |= kReadEvent;
         update();

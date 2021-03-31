@@ -20,11 +20,12 @@ public:
     ~EventLoop();
 
     void loop();
-    void AssertInLoop();
-    bool IsInLoopThread();
+    void assert_in_loop();
+    bool is_in_loop_thread();
     void quit();
-    void UpdateChannel(Channel *channel);
-    const EventLoop *EventLoop::getEventOfCurrentThread();
+
+    void update_channel(Channel *channel);
+    const EventLoop *EventLoop::get_curthread();
 
 private:
     typedef std::vector<Channel *> ChannelList;

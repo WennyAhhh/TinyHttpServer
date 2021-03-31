@@ -26,16 +26,16 @@ public:
 
     virtual void poll(int timeoutMs, ChannelList *ActiveChannels) = 0;
 
-    virtual void UpdateChannel(Channel *channel) = 0;
+    virtual void update_channel(Channel *channel) = 0;
 
-    virtual void RemoveChannel(Channel *channel) = 0;
+    virtual void remove_channel(Channel *channel) = 0;
 
-    virtual bool HasChannel(Channel *channel) const;
+    virtual bool has_channel(Channel *channel) const;
 
-    void AssertInLoopThread() const;
+    void assert_in_loop_thread() const;
 
 protected:
-    virtual void FillActiveChannels(int num_events, ChannelList *active_channels) const = 0;
+    virtual void fill_active_channels(int num_events, ChannelList *active_channels) const = 0;
     ChannelMap channels_;
 
 private:

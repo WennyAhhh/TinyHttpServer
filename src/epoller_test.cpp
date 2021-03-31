@@ -20,8 +20,8 @@ int main()
 
     int timefd = ::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
     Channel channel(g_loop, timefd);
-    channel.SetReadCallBack(timeout);
-    channel.EnableReading();
+    channel.set_read_cb(timeout);
+    channel.enable_reading();
 
     itimerspec howlong;
     bzero(&howlong, sizeof howlong);

@@ -23,7 +23,7 @@ void Epoller::poll(int timeoutMs, ChannelList *active_channels)
     if (cnt > 0)
     {
         LOG_INFO("%d events happend", cnt);
-        FillActiveChannels(cnt, active_channels);
+        fill_active_channels(cnt, active_channels);
         if (cnt == events_.size())
         {
             events_.resize(cnt * 2);
@@ -43,7 +43,7 @@ void Epoller::poll(int timeoutMs, ChannelList *active_channels)
     }
 }
 
-void Epoller::FillActiveChannels(int num_events, ChannelList *active_channels) const
+void Epoller::fill_active_channels(int num_events, ChannelList *active_channels) const
 {
     for (int i = 0; i < num_events; i++)
     {
@@ -56,10 +56,10 @@ void Epoller::FillActiveChannels(int num_events, ChannelList *active_channels) c
     }
 }
 
-void Epoller::UpdateChannel(Channel *channel)
+void Epoller::update_channel(Channel *channel)
 {
     // 更新
-    PollBase::AssertInLoopThread();
+    PollBase::assert_in_loop_thread();
     const int index = channel->index();
     // int fd = channel->fd();
     LOG_INFO("fd = %d events = %d index = %d", channel->fd(), channel->events(), channel->index());
@@ -85,7 +85,7 @@ void Epoller::UpdateChannel(Channel *channel)
     }
     else
     {
-        if (channel->IsNoneEvent())
+        if (channel->is_none_event())
         {
             update(EPOLL_CTL_DEL, channel);
             channel->set_index(static_cast<int>(POLL_TAG::DEL));
@@ -117,9 +117,9 @@ void Epoller::update(int epoll_tag, Channel *channel)
     }
 }
 
-void Epoller::RemoveChannel(Channel *channel)
+void Epoller::remove_channel(Channel *channel)
 {
-    PollBase::AssertInLoopThread();
+    PollBase::assert_in_loop_thread();
     int fd = channel->fd();
     LOG_INFO("%d = ", fd);
     int index = channel->index();

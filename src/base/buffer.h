@@ -35,37 +35,37 @@ public:
     }
     ssize_t readFd(int fd, int *saveErrno);
     // 返回可读区域
-    size_t ReadAbleBytes() const
+    size_t read_able_bytes() const
     {
         return writer_index_ - reader_index_;
     }
     // 返回可写区域
-    size_t WriteAbleBytes() const
+    size_t write_able_bytes() const
     {
         return buffer_.size() - writer_index_;
     }
     // 返回预留区域
-    size_t PrependAbleBytes() const
+    size_t prepend_able_bytes() const
     {
         return reader_index_;
     }
     const char *peek() const
     {
-        return begin() + reader_index_;
+        return begin_() + reader_index_;
     }
-    void Retrieve(size_t len)
+    void retrieve(size_t len)
     {
-        assert(len <= ReadAbleBytes());
-        if (len < ReadAbleBytes())
+        assert(len <= read_able_bytes());
+        if (len < read_able_bytes())
         {
             reader_index_ += len;
         }
         else
         {
-            RetrieveAll();
+            retrieve_all();
         }
     }
-    void RetrieveAll()
+    void retrieve_all()
     {
         reader_index_ = cheap_prepend;
         writer_index_ = cheap_prepend;
@@ -76,34 +76,34 @@ public:
         assert(peek() <= end);
         assert(end <= BeginWrite());
         // 如果相等的话， 不会读取
-        Retrieve(end - peek());
+        retrieve(end - peek());
     }
-    std::string RetrieveAllAsString()
+    std::string retrieve_all_string()
     {
-        return RetrieveAsString(ReadAbleBytes());
+        return retrieve_string(read_able_bytes());
     }
-    std::string RetrieveAsString(size_t len)
+    std::string retrieve_string(size_t len)
     {
-        assert(len <= ReadAbleBytes());
+        assert(len <= read_able_bytes());
         std::string res(peek(), len);
-        Retrieve(len);
+        retrieve(len);
         return res;
     }
     const char *BeginWrite() const
     {
-        return begin() + writer_index_;
+        return begin_() + writer_index_;
     }
 
-    char *BeginWrite() noexcept
+    char *begin_write() noexcept
     {
-        return begin() + writer_index_;
+        return begin_() + writer_index_;
     }
 
     void append(const char *data, size_t len)
     {
-        EnsureWritAbleBytes(len);
+        ensure(len);
         std::copy(data, data + len, BeginWrite());
-        HasWritten(len);
+        has_written(len);
     }
     void append(const std::string_view data)
     {
@@ -116,9 +116,9 @@ public:
     void prepend(const std::string_view data, size_t len)
     {
         // 可以后挪
-        assert(len <= PrependAbleBytes());
+        assert(len <= prepend_able_bytes());
         reader_index_ -= len;
-        std::copy(data.begin(), data.begin() + len, begin() + reader_index_);
+        std::copy(data.begin(), data.begin() + len, begin_() + reader_index_);
     }
     void shrink()
     {
@@ -126,14 +126,14 @@ public:
         std::vector<char>(buffer_).swap(buffer_);
     }
     // 可能抛出异常
-    void EnsureWritAbleBytes(size_t len)
+    void ensure(size_t len)
     {
-        if (WriteAbleBytes() < len)
+        if (write_able_bytes() < len)
         {
-            MakeSpace(len);
+            makespace(len);
         }
     }
-    void HasWritten(size_t len) noexcept
+    void has_written(size_t len) noexcept
     {
         writer_index_ += len;
     }
@@ -146,21 +146,21 @@ public:
         }
         std::cout << std::endl;
     }
-    const int GetSize() const
+    const int size() const
     {
         return buffer_.capacity();
     }
 
 private:
-    char *begin()
+    char *begin_()
     {
         return &*buffer_.begin();
     }
-    const char *begin() const
+    const char *begin_() const
     {
         return &*buffer_.begin();
     }
-    void MakeSpace(size_t len);
+    void makespace(size_t len);
     std::vector<char> buffer_;
     size_t reader_index_;
     size_t writer_index_;
