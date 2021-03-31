@@ -4,7 +4,7 @@
 
 #include <sys/epoll.h>
 #include "pollbase.h"
-#include "../src/log.h"
+#include "log.h"
 
 class Epoller final : public PollBase
 {

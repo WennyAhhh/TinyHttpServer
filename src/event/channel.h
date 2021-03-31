@@ -3,7 +3,7 @@
 #define CHANNEL_H
 #include <functional>
 #include <sys/poll.h>
-#include "../src/log.h"
+#include "base/log.h"
 class EventLoop;
 
 // 事件分发

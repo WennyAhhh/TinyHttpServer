@@ -11,11 +11,11 @@ Log::Log() : thread_(std::bind(&Log::ThreadFunc, this), "Log"),
 
 void Log::init(
     const std::string_view path,
-    bool p_timestamp = false,
+    bool p_TimerStamp = false,
     bool p_datestamp = false)
 {
     // path_ = path.data();
-    time_stamp_ = p_timestamp;
+    time_stamp_ = p_TimerStamp;
     date_stamp_ = p_datestamp;
     SwitchLog();
     running_ = true;

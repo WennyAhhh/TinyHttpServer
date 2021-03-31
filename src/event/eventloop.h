@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <sys/poll.h>
-#include "../src/log.h"
+#include "../base/log.h"
 
 class Channel;
 class PollBase;

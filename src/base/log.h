@@ -34,7 +34,7 @@ public:
     }
     void init(
         const std::string_view path,
-        bool p_timestamp,
+        bool p_TimerStamp,
         bool p_datastamp);
     bool is_Open()
     {
@@ -56,7 +56,7 @@ public:
         }
         if (time_stamp_)
         {
-            mess += "[" + TimeStamp() + "] ";
+            mess += "[" + TimerStamp() + "] ";
         }
         mess += str;
         append(mess.data(), mess.size());
@@ -65,7 +65,7 @@ public:
 private:
     Log();
     void ThreadFunc();
-    std::string TimeStamp() noexcept
+    std::string TimerStamp() noexcept
     {
         char str[9];
         time_t t = time(0);
