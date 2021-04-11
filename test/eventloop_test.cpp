@@ -1,4 +1,4 @@
-#include "../src/event/eventloop.h"
+#include "event/eventloop.h"
 #include <iostream>
 #include <thread>
 #include <unistd.h>
@@ -14,7 +14,7 @@ void threadFunc()
 
 int main()
 {
-    Log::Instance()->init("./log", true, true);
+    Log::instance()->init("./log", true, true);
     sleep(1);
     printf("threadFunc(): pid = %d \n", static_cast<int>(getpid()));
     EventLoop loop;

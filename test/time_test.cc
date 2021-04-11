@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../base/timequeue.h"
+#include "base/timequeue.h"
 
 using namespace std;
 

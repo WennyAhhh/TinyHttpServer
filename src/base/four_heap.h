@@ -1,3 +1,6 @@
+#pragma once
+#ifndef FOUR_HEAP_H
+#define FOUR_HEAP_H
 #include <ctime>
 #include <vector>
 #include <map>
@@ -31,3 +34,4 @@ private:
     std::vector<TimerNode> heap_;
     std::unordered_map<int, int> index_;
 };
+#endif

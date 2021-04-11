@@ -1,1 +1,0 @@
-g++ eventloop_test.cpp eventloop.cc ../src/log.cc ../src/buffer.cc -o event -std=c++17 -pthread 

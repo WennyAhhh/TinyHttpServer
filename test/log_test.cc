@@ -1,11 +1,11 @@
 #include <iostream>
 #include <unistd.h>
-#include "../src/log.h"
+#include "base/log.h"
 
 int main()
 {
     std::cout << "xx" << std::endl;
-    Log::Instance()->init("./log", true, true);
+    Log::instance()->init("./log", true, true);
     sleep(1);
     while (1)
     {
