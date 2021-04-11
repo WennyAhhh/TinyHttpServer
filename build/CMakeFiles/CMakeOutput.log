@@ -1,0 +1,59 @@
+The system is: Linux - sh: 0: getcwd() failed: No such file or directory
+4.15.0-122-generic - sh: 0: getcwd() failed: No such file or directory
+x86_64
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9a8e5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9a8e5.dir/build.make CMakeFiles/cmTC_9a8e5.dir/build
+make[1]: Entering directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9a8e5.dir/testCCompiler.c.o
+/usr/bin/gcc-7    -o CMakeFiles/cmTC_9a8e5.dir/testCCompiler.c.o   -c /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_9a8e5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9a8e5.dir/link.txt --verbose=1
+/usr/bin/gcc-7      CMakeFiles/cmTC_9a8e5.dir/testCCompiler.c.o  -o cmTC_9a8e5 
+make[1]: Leaving directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6aef2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6aef2.dir/build.make CMakeFiles/cmTC_6aef2.dir/build
+make[1]: Entering directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6aef2.dir/CMakeCCompilerABI.c.o
+/usr/bin/gcc-7    -o CMakeFiles/cmTC_6aef2.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.10/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_6aef2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6aef2.dir/link.txt --verbose=1
+/usr/bin/gcc-7      CMakeFiles/cmTC_6aef2.dir/CMakeCCompilerABI.c.o  -o cmTC_6aef2 
+make[1]: Leaving directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cfd4c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cfd4c.dir/build.make CMakeFiles/cmTC_cfd4c.dir/build
+make[1]: Entering directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_cfd4c.dir/testCXXCompiler.cxx.o
+/usr/bin/g++-7     -o CMakeFiles/cmTC_cfd4c.dir/testCXXCompiler.cxx.o -c /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_cfd4c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cfd4c.dir/link.txt --verbose=1
+/usr/bin/g++-7       CMakeFiles/cmTC_cfd4c.dir/testCXXCompiler.cxx.o  -o cmTC_cfd4c 
+make[1]: Leaving directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2b40f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2b40f.dir/build.make CMakeFiles/cmTC_2b40f.dir/build
+make[1]: Entering directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2b40f.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/g++-7     -o CMakeFiles/cmTC_2b40f.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_2b40f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2b40f.dir/link.txt --verbose=1
+/usr/bin/g++-7       CMakeFiles/cmTC_2b40f.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_2b40f 
+make[1]: Leaving directory '/home/admin/source/TinyHttpServer/build/CMakeFiles/CMakeTmp'
+
+
