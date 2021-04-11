@@ -110,100 +110,6 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named buffer_test
-
-# Build rule for target.
-buffer_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 buffer_test
-.PHONY : buffer_test
-
-# fast build rule for target.
-buffer_test/fast:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/build
-.PHONY : buffer_test/fast
-
-src/buffer.o: src/buffer.cc.o
-
-.PHONY : src/buffer.o
-
-# target to build an object file
-src/buffer.cc.o:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/buffer.cc.o
-.PHONY : src/buffer.cc.o
-
-src/buffer.i: src/buffer.cc.i
-
-.PHONY : src/buffer.i
-
-# target to preprocess a source file
-src/buffer.cc.i:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/buffer.cc.i
-.PHONY : src/buffer.cc.i
-
-src/buffer.s: src/buffer.cc.s
-
-.PHONY : src/buffer.s
-
-# target to generate assembly for a file
-src/buffer.cc.s:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/buffer.cc.s
-.PHONY : src/buffer.cc.s
-
-src/log.o: src/log.cc.o
-
-.PHONY : src/log.o
-
-# target to build an object file
-src/log.cc.o:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/log.cc.o
-.PHONY : src/log.cc.o
-
-src/log.i: src/log.cc.i
-
-.PHONY : src/log.i
-
-# target to preprocess a source file
-src/log.cc.i:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/log.cc.i
-.PHONY : src/log.cc.i
-
-src/log.s: src/log.cc.s
-
-.PHONY : src/log.s
-
-# target to generate assembly for a file
-src/log.cc.s:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/src/log.cc.s
-.PHONY : src/log.cc.s
-
-test/log_test.o: test/log_test.cc.o
-
-.PHONY : test/log_test.o
-
-# target to build an object file
-test/log_test.cc.o:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/test/log_test.cc.o
-.PHONY : test/log_test.cc.o
-
-test/log_test.i: test/log_test.cc.i
-
-.PHONY : test/log_test.i
-
-# target to preprocess a source file
-test/log_test.cc.i:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/test/log_test.cc.i
-.PHONY : test/log_test.cc.i
-
-test/log_test.s: test/log_test.cc.s
-
-.PHONY : test/log_test.s
-
-# target to generate assembly for a file
-test/log_test.cc.s:
-	$(MAKE) -f CMakeFiles/buffer_test.dir/build.make CMakeFiles/buffer_test.dir/test/log_test.cc.s
-.PHONY : test/log_test.cc.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -211,17 +117,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... buffer_test"
 	@echo "... edit_cache"
-	@echo "... src/buffer.o"
-	@echo "... src/buffer.i"
-	@echo "... src/buffer.s"
-	@echo "... src/log.o"
-	@echo "... src/log.i"
-	@echo "... src/log.s"
-	@echo "... test/log_test.o"
-	@echo "... test/log_test.i"
-	@echo "... test/log_test.s"
 .PHONY : help
 
 
