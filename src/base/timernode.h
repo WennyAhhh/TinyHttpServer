@@ -15,6 +15,7 @@ public:
     int node_id;
     TimerStamp timer;
     TimerOutCallBack cb;
+
     bool operator==(const TimerNode &rhs)
     {
         // 仅仅判断时间

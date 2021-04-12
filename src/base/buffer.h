@@ -70,11 +70,11 @@ public:
         reader_index_ = cheap_prepend;
         writer_index_ = cheap_prepend;
     }
-    void RetrieveUnitil(const char *end)
+    void retrieve_unitil(const char *end)
     {
         // 通用的end设定
         assert(peek() <= end);
-        assert(end <= BeginWrite());
+        assert(end <= begin_write());
         // 如果相等的话， 不会读取
         retrieve(end - peek());
     }
@@ -89,7 +89,8 @@ public:
         retrieve(len);
         return res;
     }
-    const char *BeginWrite() const
+
+    const char *begin_write() const
     {
         return begin_() + writer_index_;
     }
@@ -102,7 +103,7 @@ public:
     void append(const char *data, size_t len)
     {
         ensure(len);
-        std::copy(data, data + len, BeginWrite());
+        std::copy(data, data + len, begin_write());
         has_written(len);
     }
     void append(const std::string_view data)

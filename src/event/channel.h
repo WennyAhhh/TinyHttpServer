@@ -4,6 +4,7 @@
 #include <functional>
 #include <sys/poll.h>
 #include "base/log.h"
+
 class EventLoop;
 
 // 事件分发
@@ -29,6 +30,7 @@ public:
     {
         error_call_back_ = cb;
     }
+
     int fd() const
     {
         return fd_;
@@ -46,31 +48,61 @@ public:
     {
         return events_ == kNoneEvent;
     }
+
+    // 设置事件
     void enable_reading()
     {
         events_ |= kReadEvent;
         update();
     }
+    void disable_reading()
+    {
+        events_ &= ~kReadEvent;
+        update();
+    }
+    void enable_writing()
+    {
+        events_ |= kWriteEvent;
+        update();
+    }
+    void disable_writing()
+    {
+        events_ &= ~kWriteEvent;
+        update();
+    }
+    void disable_all()
+    {
+        events_ = kNoneEvent;
+        update();
+    }
+    bool is_writing() const
+    {
+        return events_ & kWriteEvent;
+    }
+    bool is_reading() const
+    {
+        return events_ & kReadEvent;
+    }
 
-    int index()
+    // channel在epoller的状态
+    int status()
     {
-        return index_;
+        return status_;
     }
-    void set_index(int idx)
+    void set_status(int status)
     {
-        index_ = idx;
+        status_ = status;
     }
+
     EventLoop *ownerLoop()
     {
         return loop_;
     }
 
+    void remove();
+
 private:
     void update();
-
-    static const int kNoneEvent;
-    static const int kReadEvent;
-    static const int kWriteEvent;
 
     EventLoop *loop_;
     // 记录的fd
@@ -80,8 +112,9 @@ private:
     //
     int revents_;
     // channel在PollBase中拥有的下标
-    int index_;
+    int status_;
 
+    bool added_to_loop{false};
     EventCallBack read_call_back_;
     EventCallBack write_call_back_;
     EventCallBack error_call_back_;

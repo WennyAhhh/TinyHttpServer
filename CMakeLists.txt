@@ -4,6 +4,9 @@ project(tinytest)
 
 set(CMAKE_CXX_STANDARD  17)
 
-set_property(GLOBAL PROPERTY LIB_SOURCE "${PROJECT_SOURCE_DIR}/src" )
+set(LIB_SOURCE "${PROJECT_SOURCE_DIR}/src")
 
 add_subdirectory(unit_test)
+
+
+

@@ -5,7 +5,7 @@ Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
                                             fd_(fd),
                                             events_(0),
                                             revents_(0),
-                                            index_(-1)
+                                            status_(-1)
 {
 }
 
@@ -46,4 +46,10 @@ void Channel::handle_event()
 void Channel::update()
 {
     loop_->update_channel(this);
+}
+
+void Channel::remove()
+{
+    assert(is_none_event());
+    added_to_loop = false;
 }

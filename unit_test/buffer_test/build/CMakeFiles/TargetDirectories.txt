@@ -1,4 +1,0 @@
-/home/admin/source/TinyHttpServer/test/buffer_test/build/CMakeFiles/rebuild_cache.dir
-/home/admin/source/TinyHttpServer/test/buffer_test/build/CMakeFiles/edit_cache.dir
-/home/admin/source/TinyHttpServer/test/buffer_test/build/CMakeFiles/buffer.dir
-/home/admin/source/TinyHttpServer/test/buffer_test/build/CMakeFiles/buffer_test.dir

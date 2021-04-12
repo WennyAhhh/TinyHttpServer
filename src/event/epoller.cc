@@ -60,15 +60,15 @@ void Epoller::update_channel(Channel *channel)
 {
     // 更新
     PollBase::assert_in_loop_thread();
-    const int index = channel->index();
+    const int status = channel->status();
     // int fd = channel->fd();
-    LOG_INFO("fd = %d events = %d index = %d", channel->fd(), channel->events(), channel->index());
-    if (index == static_cast<int>(POLL_TAG::NEW) || index == static_cast<int>(POLL_TAG::DEL))
+    LOG_INFO("fd = %d events = %d index = %d", channel->fd(), channel->events(), channel->status());
+    if (status == static_cast<int>(POLL_TAG::NEW) || status == static_cast<int>(POLL_TAG::DEL))
     {
         // 如果channel没有加入到map中, 需要加入
-        channel->set_index(static_cast<int>(POLL_TAG::ADD));
+        channel->set_status(static_cast<int>(POLL_TAG::ADD));
         int fd = channel->fd();
-        if (index == static_cast<int>(POLL_TAG::NEW))
+        if (status == static_cast<int>(POLL_TAG::NEW))
         {
             auto pItem = channels_.find(fd);
             assert(pItem == channels_.end());
@@ -88,7 +88,7 @@ void Epoller::update_channel(Channel *channel)
         if (channel->is_none_event())
         {
             update(EPOLL_CTL_DEL, channel);
-            channel->set_index(static_cast<int>(POLL_TAG::DEL));
+            channel->set_status(static_cast<int>(POLL_TAG::DEL));
         }
         else
         {
@@ -122,12 +122,12 @@ void Epoller::remove_channel(Channel *channel)
     PollBase::assert_in_loop_thread();
     int fd = channel->fd();
     LOG_INFO("%d = ", fd);
-    int index = channel->index();
+    int index = channel->status();
     assert(index == static_cast<int>(POLL_TAG::ADD) || index == static_cast<int>(POLL_TAG::DEL));
     channels_.erase(fd);
     if (index == static_cast<int>(POLL_TAG::ADD))
     {
         update(EPOLL_CTL_DEL, channel);
     }
-    channel->set_index(static_cast<int>(POLL_TAG::NEW));
+    channel->set_status(static_cast<int>(POLL_TAG::NEW));
 }

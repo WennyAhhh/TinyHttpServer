@@ -5,7 +5,7 @@
 int main()
 {
     std::cout << "xx" << std::endl;
-    Log::instance()->init("./log", true, true);
+    Log::instance()->init("./.log", true, true);
     sleep(1);
     while (1)
     {
