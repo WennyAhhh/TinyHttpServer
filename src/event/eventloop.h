@@ -33,8 +33,8 @@ public:
     void update_channel(Channel *channel);
     void remvoe_channel(Channel *channel);
     const EventLoop *get_curthread();
-    TimerNode run_after(int node_id, int delay, TimerOutCallBack cb);
-    void cancel(int node_id);
+    TimerNode run_after(float delay, TimerOutCallBack cb);
+    void cancel(TimerNode);
 
 private:
     typedef std::vector<Channel *> ChannelList;

@@ -1,4 +1,5 @@
 #include "timerqueue.h"
+#include "event/eventloop.h"
 
 int create_timerfd()
 {
@@ -34,7 +35,7 @@ TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb)
     assert(node_seq >= 0);
     TimerStamp timer = TimerNode::now() + TimerNode::milliseconds(interval);
     TimerNode node(node_seq, timer, cb);
-    timer_list_->push(node_seq, node);
+    loop_->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop, this, node));
     return node;
 }
 
@@ -43,9 +44,19 @@ void TimerQueue::clear_()
     timer_list_->clear();
 }
 
-void TimerQueue::cancel(int node_id)
+void TimerQueue::cancel(TimerNode node)
 {
-    timer_list_->remove(node_id);
+    loop_->run_in_loop(std::bind(&TimerQueue::cancel_timer_in_loop, this, node));
+}
+
+void TimerQueue::add_timer_in_loop(TimerNode node)
+{
+    loop_->assert_in_loop();
+    timer_list_->push(node);
+}
+
+void TimerQueue::cancel_timer_in_loop(TimerNode node)
+{
 }
 
 void TimerQueue::reset_(int node_id, int timeout)
@@ -66,4 +77,38 @@ std::vector<TimerNode> TimerQueue::get_expired_()
         timer_list_->pop();
     }
     return res;
+}
+
+int TimerQueue::get_()
+{
+    int seq = -1;
+    if (seq_.empty())
+    {
+        for (int i = 0; i < LIMIT; i++)
+        {
+            ++seq_limit_;
+            ++index_;
+            seq_.push(seq_limit_);
+        }
+    }
+    seq = seq_.front();
+    seq_.pop();
+    return seq;
+}
+
+void TimerQueue::del_(TimerNode &node)
+{
+    int seq = node.get_node_seq();
+    seq_.push(seq);
+    if (index_ == seq_limit_)
+    {
+        seq_limit_ = 0;
+        index_ = 0;
+        std::queue<int> tar;
+        swap(seq_, tar);
+    }
+    else
+    {
+        index_--;
+    }
 }

@@ -68,7 +68,6 @@ void EventLoop::remvoe_channel(Channel *channel)
     if (event_handling)
     {
         // 如果此时事件正在处理， 需要判断移除的是否的fd是否还在处理
-        assert()
     }
 }
 
@@ -114,14 +113,15 @@ void EventLoop::assert_in_loop()
     }
 }
 
-TimerNode EventLoop::run_after(int node_id, int delay, TimerOutCallBack cb)
+TimerNode EventLoop::run_after(float delay, TimerOutCallBack cb)
 {
-    return timer_queue_->add_timer(node_id, delay, cb);
+    assert(delay >= 0);
+    return timer_queue_->add_timer(delay, cb);
 }
 
-void EventLoop::cancel(int node_id)
+void EventLoop::cancel(TimerNode node)
 {
-    timer_queue_->cancel(node_id);
+    timer_queue_->cancel(node);
 }
 
 void EventLoop::run_in_loop(Functor cb)

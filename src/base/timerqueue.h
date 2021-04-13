@@ -20,21 +20,26 @@ typedef high_resolution_clock::time_point TimerStamp;
 class TimerQueue
 {
 public:
+    static const int LIMIT = 1024;
     explicit TimerQueue(EventLoop *loop);
     ~TimerQueue();
     TimerNode add_timer(float interval, TimerOutCallBack cb);
-    void cancel(int node_id);
+    void cancel(TimerNode node);
 
 private:
     bool insert_();
     std::vector<TimerNode> get_expired_();
     void reset_(int node_id, int timeout);
+    void add_timer_in_loop(TimerNode);
+    void cancel_timer_in_loop(TimerNode);
     int get_();
-    void cancel_(TimerNode &);
+    void del_(TimerNode &);
     void clear_();
 
     std::unique_ptr<FourHeap> timer_list_;
     std::queue<int> seq_;
+    size_t seq_limit_;
+    size_t index_;
     const int timerfd_;
     Channel timer_channel_;
     std::atomic<bool> calling_expired_{false};

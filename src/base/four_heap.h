@@ -15,10 +15,10 @@ public:
     FourHeap();
     // FourHeap(vector<T> heap);
     ~FourHeap();
-    void push(int id, TimerNode &val);
+    void push(TimerNode &val);
     TimerNode front();
     void pop();
-    void remove(int id);
+    bool remove(int id);
     void reset(int id, TimerStamp &timer);
     bool empty()
     {

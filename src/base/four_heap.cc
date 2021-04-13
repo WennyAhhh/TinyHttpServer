@@ -92,8 +92,9 @@ void FourHeap::destory_(size_t pos)
     heap_.pop_back();
 }
 
-void FourHeap::push(int seq, TimerNode &node)
+void FourHeap::push(TimerNode &node)
 {
+    int seq = node.get_node_seq();
     if (index_.count(seq) == 0)
     {
         index_[seq] = heap_.size();
@@ -127,10 +128,14 @@ void FourHeap::pop()
     destory_(0);
 }
 
-void FourHeap::remove(int id)
+bool FourHeap::remove(int id)
 {
-    assert(index_.count(id) == 1);
+    if (index_.count(id) == 1)
+    {
+        return false;
+    }
     destory_(index_[id]);
+    return true;
 }
 
 void FourHeap::reset(int id, TimerStamp &timer)
