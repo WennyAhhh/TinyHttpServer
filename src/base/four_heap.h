@@ -19,7 +19,7 @@ public:
     TimerNode front();
     void pop();
     void remove(int id);
-    void reset(int id, TimerStamp timer);
+    void reset(int id, TimerStamp &timer);
     bool empty()
     {
         return heap_.empty();

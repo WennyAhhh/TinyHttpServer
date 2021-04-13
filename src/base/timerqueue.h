@@ -2,6 +2,7 @@
 #ifndef TIMERQUEUE_H
 #define TIMERQUEUE_H
 
+#include <queue>
 #include <vector>
 #include <chrono>
 #include <functional>
@@ -21,16 +22,19 @@ class TimerQueue
 public:
     explicit TimerQueue(EventLoop *loop);
     ~TimerQueue();
-    TimerNode add_timer(int node_id, int interval, TimerOutCallBack cb);
+    TimerNode add_timer(float interval, TimerOutCallBack cb);
     void cancel(int node_id);
 
 private:
     bool insert_();
     std::vector<TimerNode> get_expired_();
     void reset_(int node_id, int timeout);
+    int get_();
+    void cancel_(TimerNode &);
     void clear_();
 
     std::unique_ptr<FourHeap> timer_list_;
+    std::queue<int> seq_;
     const int timerfd_;
     Channel timer_channel_;
     std::atomic<bool> calling_expired_{false};

@@ -28,11 +28,13 @@ TimerQueue::~TimerQueue()
     clear_();
 }
 
-TimerNode TimerQueue::add_timer(int node_id, int interval, TimerOutCallBack cb)
+TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb)
 {
-    assert(node_id >= 0);
-    TimerNode node({node_id, Clock::now() + std::chrono::milliseconds(interval), cb});
-    timer_list_->push(node_id, node);
+    int node_seq = get_();
+    assert(node_seq >= 0);
+    TimerStamp timer = TimerNode::now() + TimerNode::milliseconds(interval);
+    TimerNode node(node_seq, timer, cb);
+    timer_list_->push(node_seq, node);
     return node;
 }
 
@@ -49,7 +51,6 @@ void TimerQueue::cancel(int node_id)
 void TimerQueue::reset_(int node_id, int timeout)
 {
     // 暂时只支持延长
-    timer_list_->reset(node_id, Clock::now() + std::chrono::milliseconds(timeout));
 }
 
 std::vector<TimerNode> TimerQueue::get_expired_()
@@ -59,7 +60,7 @@ std::vector<TimerNode> TimerQueue::get_expired_()
     while (!timer_list_->empty())
     {
         TimerNode tar = timer_list_->front();
-        if (tar.timer > ts)
+        if (tar.get_timer() > ts)
             break;
         res.emplace_back(tar);
         timer_list_->pop();

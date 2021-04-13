@@ -20,8 +20,8 @@ void FourHeap::swap_(size_t l_pos, size_t r_pos)
 {
     using std::swap;
     swap(heap_[l_pos], heap_[r_pos]);
-    index_[heap_[l_pos].node_id] = l_pos;
-    index_[heap_[r_pos].node_id] = r_pos;
+    index_[heap_[l_pos].get_node_seq()] = l_pos;
+    index_[heap_[r_pos].get_node_seq()] = r_pos;
 }
 
 int FourHeap::shif_down_(size_t pos)
@@ -34,12 +34,12 @@ int FourHeap::shif_down_(size_t pos)
     while (j < n)
     {
         // 赋值那边做了深拷贝。
-        auto maxi = heap_[i].timer;
+        auto maxi = heap_[i].get_timer();
         for (int k = j; k < n && k < j + 4; k++)
         {
-            if (maxi < heap_[k].timer)
+            if (maxi < heap_[k].get_timer())
             {
-                maxi = heap_[k].timer;
+                maxi = heap_[k].get_timer();
                 maxi_index = k;
             }
         }
@@ -88,25 +88,30 @@ void FourHeap::destory_(size_t pos)
             shif_up_(pos);
         }
     }
-    index_.erase(heap_.back().node_id);
+    index_.erase(heap_.back().get_node_seq());
     heap_.pop_back();
 }
 
-void FourHeap::push(int id, TimerNode &node)
+void FourHeap::push(int seq, TimerNode &node)
 {
-    if (index_.count(id) == 0)
+    if (index_.count(seq) == 0)
     {
-        index_[id] = heap_.size();
+        index_[seq] = heap_.size();
         heap_.push_back(node);
         if (heap_.size() == 1)
         {
             return;
         }
-        shif_up_(id);
+        shif_up_(seq);
     }
     else
     {
-        heap_[index_[id]] = node;
+        int pos = index_[seq];
+        heap_[pos] = node;
+        if (shif_down_(pos) == 0)
+        {
+            shif_up_(pos);
+        }
     }
 }
 
@@ -128,8 +133,9 @@ void FourHeap::remove(int id)
     destory_(index_[id]);
 }
 
-void FourHeap::reset(int id, TimerStamp timer)
+void FourHeap::reset(int id, TimerStamp &timer)
 {
-    heap_[index_[id]].timer = timer;
+
+    heap_[index_[id]].set_timer_stamp(timer);
     shif_down_(index_[id]);
 }
