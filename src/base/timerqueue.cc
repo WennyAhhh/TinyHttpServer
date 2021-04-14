@@ -14,6 +14,11 @@ int create_timerfd()
 
 timespec time_from_now(TimerNode timer)
 {
+    int64_t micro = static_cast<int64_t>(std::chrono::duration<double, std::micro>(timer.get_timer() - TimerNode::now()).count());
+    if (micro < 100)
+    {
+        micro = 100;
+    }
 }
 
 TimerQueue::TimerQueue(EventLoop *loop) : loop_(loop),
@@ -33,7 +38,8 @@ TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb)
 {
     int node_seq = get_();
     assert(node_seq >= 0);
-    TimerStamp timer = TimerNode::now() + TimerNode::milliseconds(interval);
+    // 转为微秒级
+    TimerStamp timer = TimerNode::now() + TimerNode::tarns_mirco(interval);
     TimerNode node(node_seq, timer, cb);
     loop_->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop, this, node));
     return node;
@@ -66,7 +72,7 @@ void TimerQueue::reset_(int node_id, int timeout)
 
 std::vector<TimerNode> TimerQueue::get_expired_()
 {
-    auto ts = Clock::now();
+    TimerStamp ts = TimerNode::now();
     std::vector<TimerNode> res;
     while (!timer_list_->empty())
     {

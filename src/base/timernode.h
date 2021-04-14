@@ -6,17 +6,18 @@
 #include <chrono>
 
 typedef std::function<void()> TimerOutCallBack;
-typedef std::chrono::high_resolution_clock Clock;
-typedef Clock::time_point TimerStamp;
+typedef std::chrono::steady_clock Clock;
+typedef std::chrono::steady_clock::time_point TimerStamp;
 
 // todo 模板， 移动构造
 class TimerNode
 {
 public:
     static constexpr int kmillisecond = 1000;
-    static std::chrono::microseconds milliseconds(float interval)
+    // 转化成为毫秒
+    static std::chrono::microseconds tarns_mirco(float interval)
     {
-        return std::chrono::milliseconds(static_cast<int64_t>(interval * kmillisecond));
+        return std::chrono::microseconds(static_cast<int64_t>(interval * kmillisecond));
     }
     TimerNode(int node_seq, TimerStamp &timer, TimerOutCallBack &cb) : node_seq_(node_seq),
                                                                        timer_(std::move(timer)),
@@ -24,7 +25,7 @@ public:
     {
     }
 
-    static std::chrono::system_clock::time_point now()
+    static TimerStamp now()
     {
         return Clock::now();
     }
@@ -39,7 +40,7 @@ public:
         return node_seq_;
     }
 
-    const TimerStamp get_timer()
+    TimerStamp get_timer()
     {
         return timer_;
     }
