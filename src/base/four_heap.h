@@ -16,9 +16,11 @@ public:
     // FourHeap(vector<T> heap);
     ~FourHeap();
     void push(TimerNode &val);
-    TimerNode front();
+    TimerNode front() const;
     void pop();
+    bool find(TimerNode &node) const;
     bool remove(int id);
+    bool remove(TimerNode &node);
     void reset(int id, TimerStamp &timer);
     bool empty()
     {

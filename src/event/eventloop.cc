@@ -16,7 +16,7 @@ int createEventfd()
     return evtfd;
 }
 
-EventLoop::EventLoop() : pollbase_(new Epoller(this)),
+EventLoop::EventLoop() : poller_(new Epoller(this)),
                          thread_id_(std::this_thread::get_id()),
                          wakefd_(createEventfd()),
                          wake_channel(std::make_unique<Channel>(this, wakefd_)),
@@ -58,7 +58,7 @@ void EventLoop::update_channel(Channel *channel)
     assert(channel->ownerLoop() == this);
     // 判断是否当前线程是否与创建时的线程一样
     assert_in_loop();
-    pollbase_->update_channel(channel);
+    poller_->update_channel(channel);
 }
 
 void EventLoop::remvoe_channel(Channel *channel)
@@ -68,7 +68,9 @@ void EventLoop::remvoe_channel(Channel *channel)
     if (event_handling)
     {
         // 如果此时事件正在处理， 需要判断移除的是否的fd是否还在处理
+        assert(cur_channel == channel || std::find(active_channels_.begin(), active_channels_.end(), channel) == active_channels_.end());
     }
+    poller_->remove_channel(channel);
 }
 
 const EventLoop *EventLoop::get_curthread()
@@ -86,7 +88,7 @@ void EventLoop::loop()
     {
         active_channels_.clear();
         active_channels_.shrink_to_fit();
-        pollbase_->poll(PollTimeMs, &active_channels_);
+        poller_->poll(PollTimeMs, &active_channels_);
         // 因为返回的是指针， 用引用好像有些不合适
         for (Channel *channel : active_channels_)
         {

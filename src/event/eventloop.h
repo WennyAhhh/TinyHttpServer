@@ -48,7 +48,7 @@ private:
     std::atomic<bool> event_handling{false};
     std::mutex mtx_;
     std::thread::id thread_id_;
-    std::unique_ptr<PollBase> pollbase_;
+    std::unique_ptr<PollBase> poller_;
     std::unique_ptr<TimerQueue> timer_queue_;
     std::unique_ptr<Channel> wake_channel;
     std::vector<Functor> pending_func_;

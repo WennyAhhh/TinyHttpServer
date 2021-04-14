@@ -116,9 +116,14 @@ void FourHeap::push(TimerNode &node)
     }
 }
 
-TimerNode FourHeap::front()
+TimerNode FourHeap::front() const
 {
     return heap_.front();
+}
+
+bool FourHeap::find(TimerNode &node) const
+{
+    return index_.count(node.get_node_seq()) > 0;
 }
 
 void FourHeap::pop()
@@ -136,6 +141,11 @@ bool FourHeap::remove(int id)
     }
     destory_(index_[id]);
     return true;
+}
+
+bool FourHeap::remove(TimerNode &node)
+{
+    return remove(node.get_node_seq());
 }
 
 void FourHeap::reset(int id, TimerStamp &timer)

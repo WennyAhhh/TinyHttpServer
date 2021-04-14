@@ -8,16 +8,15 @@
 typedef std::function<void()> TimerOutCallBack;
 typedef std::chrono::steady_clock Clock;
 typedef std::chrono::steady_clock::time_point TimerStamp;
-
 // todo 模板， 移动构造
 class TimerNode
 {
 public:
-    static constexpr int kmillisecond = 1000;
+    static constexpr int kmicrosecond = 1000 * 1000;
     // 转化成为毫秒
     static std::chrono::microseconds tarns_mirco(float interval)
     {
-        return std::chrono::microseconds(static_cast<int64_t>(interval * kmillisecond));
+        return std::chrono::microseconds(static_cast<int64_t>(interval * kmicrosecond));
     }
     TimerNode(int node_seq, TimerStamp &timer, TimerOutCallBack &cb) : node_seq_(node_seq),
                                                                        timer_(std::move(timer)),
@@ -30,7 +29,7 @@ public:
         return Clock::now();
     }
 
-    void run()
+    void run() const
     {
         cb_();
     }
@@ -48,6 +47,11 @@ public:
     void set_call_back(TimerOutCallBack &cb)
     {
         cb_ = std::move(cb);
+    }
+
+    void set_timer_stamp(TimerStamp &&timer)
+    {
+        timer_ = timer;
     }
 
     void set_timer_stamp(TimerStamp &timer)

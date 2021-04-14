@@ -52,4 +52,5 @@ void Channel::remove()
 {
     assert(is_none_event());
     added_to_loop = false;
+    loop_->remvoe_channel(this);
 }

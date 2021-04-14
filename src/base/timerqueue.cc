@@ -19,6 +19,35 @@ timespec time_from_now(TimerNode timer)
     {
         micro = 100;
     }
+    struct timespec ts;
+    ts.tv_sec = static_cast<time_t>(micro / TimerNode::kmicrosecond);
+    ts.tv_nsec = static_cast<long>((micro % TimerNode::kmicrosecond) * 1000);
+    return ts;
+}
+
+void read_timer_fd(int timerfd, TimerNode now)
+{
+    uint64_t t;
+    ssize_t n = ::read(timerfd, &t, sizeof t);
+    LOG_DEBUG("TImerQueue::handle_read() %llu ", t);
+    if (n != sizeof t)
+    {
+        LOG_ERROR("TImerQueue::handle_read() reads %u", n);
+    }
+}
+
+void reset_timerfd(int timerfd, TimerNode expiration)
+{
+    itimerspec new_val;
+    itimerspec old_val;
+    memset(&new_val, 0, sizeof new_val);
+    memset(&old_val, 0, sizeof old_val);
+    new_val.it_value = time_from_now(expiration);
+    int ret = ::timerfd_settime(timerfd, 0, &new_val, &old_val);
+    if (ret != 0)
+    {
+        LOG_DEBUG("timerfd_settime()");
+    }
 }
 
 TimerQueue::TimerQueue(EventLoop *loop) : loop_(loop),
@@ -26,12 +55,16 @@ TimerQueue::TimerQueue(EventLoop *loop) : loop_(loop),
                                           timer_channel_(loop_, timerfd_),
                                           timer_list_(std::make_unique<FourHeap>())
 {
-    timer_channel_;
+    timer_channel_.set_read_cb(std::bind(&TimerQueue::handle_read_, this));
+    timer_channel_.enable_reading();
 }
 
 TimerQueue::~TimerQueue()
 {
     clear_();
+    timer_channel_.disable_all();
+    timer_channel_.remove();
+    ::close(timerfd_);
 }
 
 TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb)
@@ -41,33 +74,76 @@ TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb)
     // 转为微秒级
     TimerStamp timer = TimerNode::now() + TimerNode::tarns_mirco(interval);
     TimerNode node(node_seq, timer, cb);
-    loop_->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop, this, node));
+    loop_->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop_, this, node));
     return node;
 }
 
 void TimerQueue::clear_()
 {
     timer_list_->clear();
+    cancel_set_.clear();
 }
 
 void TimerQueue::cancel(TimerNode node)
 {
-    loop_->run_in_loop(std::bind(&TimerQueue::cancel_timer_in_loop, this, node));
+    loop_->run_in_loop(std::bind(&TimerQueue::cancel_timer_in_loop_, this, node));
 }
 
-void TimerQueue::add_timer_in_loop(TimerNode node)
+void TimerQueue::add_timer_in_loop_(TimerNode node)
 {
     loop_->assert_in_loop();
     timer_list_->push(node);
+    if (node <= timer_list_->front())
+    {
+        reset_timerfd(timerfd_, node);
+    }
 }
 
-void TimerQueue::cancel_timer_in_loop(TimerNode node)
+void TimerQueue::cancel_timer_in_loop_(TimerNode node)
 {
+    loop_->assert_in_loop();
+    if (!timer_list_->find(node))
+    {
+        timer_list_->remove(node);
+    }
+    else if (calling_expired_)
+    {
+        // 存在嵌套
+        cancel_set_.insert(node);
+    }
 }
 
-void TimerQueue::reset_(int node_id, int timeout)
+void TimerQueue::handle_read_()
+{
+    loop_->assert_in_loop();
+    std::vector<TimerNode> expired = get_expired_();
+    is_cancel_ = true;
+    cancel_set_.clear();
+    for (const auto &e : expired)
+    {
+        e.run();
+    }
+    is_cancel_ = false;
+
+    reset_(expired);
+}
+
+void TimerQueue::reset_(std::vector<TimerNode> &expired)
 {
     // 暂时只支持延长
+    for (auto &e : expired)
+    {
+        if (cancel_set_.find(e) == cancel_set_.end())
+        {
+            e.set_timer_stamp(Clock::now());
+            timer_list_->push(e);
+        }
+    }
+    if (!timer_list_->empty())
+    {
+        TimerNode new_expire = timer_list_->front();
+        reset_timerfd(timerfd_, new_expire);
+    }
 }
 
 std::vector<TimerNode> TimerQueue::get_expired_()
