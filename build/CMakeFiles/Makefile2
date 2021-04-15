@@ -60,6 +60,79 @@ CMAKE_SOURCE_DIR = /home/admin/source/TinyHttpServer
 CMAKE_BINARY_DIR = /home/admin/source/TinyHttpServer/build
 
 #=============================================================================
+# Directory level rules for directory unit_test
+
+# Convenience name for "all" pass in the directory.
+unit_test/all: unit_test/time_test/all
+
+.PHONY : unit_test/all
+
+# Convenience name for "clean" pass in the directory.
+unit_test/clean: unit_test/time_test/clean
+
+.PHONY : unit_test/clean
+
+# Convenience name for "preinstall" pass in the directory.
+unit_test/preinstall: unit_test/time_test/preinstall
+
+.PHONY : unit_test/preinstall
+
+#=============================================================================
+# Directory level rules for directory unit_test/time_test
+
+# Convenience name for "all" pass in the directory.
+unit_test/time_test/all: unit_test/time_test/CMakeFiles/time_test.dir/all
+
+.PHONY : unit_test/time_test/all
+
+# Convenience name for "clean" pass in the directory.
+unit_test/time_test/clean: unit_test/time_test/CMakeFiles/time_test.dir/clean
+
+.PHONY : unit_test/time_test/clean
+
+# Convenience name for "preinstall" pass in the directory.
+unit_test/time_test/preinstall:
+
+.PHONY : unit_test/time_test/preinstall
+
+#=============================================================================
+# Target rules for target unit_test/time_test/CMakeFiles/time_test.dir
+
+# All Build rule for target.
+unit_test/time_test/CMakeFiles/time_test.dir/all:
+	$(MAKE) -f unit_test/time_test/CMakeFiles/time_test.dir/build.make unit_test/time_test/CMakeFiles/time_test.dir/depend
+	$(MAKE) -f unit_test/time_test/CMakeFiles/time_test.dir/build.make unit_test/time_test/CMakeFiles/time_test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/admin/source/TinyHttpServer/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target time_test"
+.PHONY : unit_test/time_test/CMakeFiles/time_test.dir/all
+
+# Include target in all.
+all: unit_test/time_test/CMakeFiles/time_test.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+unit_test/time_test/CMakeFiles/time_test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/TinyHttpServer/build/CMakeFiles 11
+	$(MAKE) -f CMakeFiles/Makefile2 unit_test/time_test/CMakeFiles/time_test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/admin/source/TinyHttpServer/build/CMakeFiles 0
+.PHONY : unit_test/time_test/CMakeFiles/time_test.dir/rule
+
+# Convenience name for target.
+time_test: unit_test/time_test/CMakeFiles/time_test.dir/rule
+
+.PHONY : time_test
+
+# clean rule for target.
+unit_test/time_test/CMakeFiles/time_test.dir/clean:
+	$(MAKE) -f unit_test/time_test/CMakeFiles/time_test.dir/build.make unit_test/time_test/CMakeFiles/time_test.dir/clean
+.PHONY : unit_test/time_test/CMakeFiles/time_test.dir/clean
+
+# clean rule for target.
+clean: unit_test/time_test/CMakeFiles/time_test.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Special targets to cleanup operation of make.
 
 # Special rule to run CMake to check the build system integrity.

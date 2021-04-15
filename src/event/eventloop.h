@@ -33,7 +33,7 @@ public:
     void update_channel(Channel *channel);
     void remvoe_channel(Channel *channel);
     const EventLoop *get_curthread();
-    TimerNode run_after(float delay, TimerOutCallBack cb);
+    TimerNode run_after(float delay, TimerOutCallBack cb, bool repeat = true);
     void cancel(TimerNode);
 
 private:

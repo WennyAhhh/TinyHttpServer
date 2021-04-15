@@ -18,9 +18,11 @@ public:
     {
         return std::chrono::microseconds(static_cast<int64_t>(interval * kmicrosecond));
     }
-    TimerNode(int node_seq, TimerStamp &timer, TimerOutCallBack &cb) : node_seq_(node_seq),
-                                                                       timer_(std::move(timer)),
-                                                                       cb_(std::move(cb))
+    TimerNode(int node_seq, float interval, TimerStamp &timer, TimerOutCallBack &cb, bool repeat = true) : node_seq_(node_seq),
+                                                                                                           timer_(std::move(timer)),
+                                                                                                           cb_(std::move(cb)),
+                                                                                                           interval_(interval),
+                                                                                                           repeat_(repeat)
     {
     }
 
@@ -58,15 +60,31 @@ public:
     {
         timer_ = std::move(timer);
     }
-
-    bool operator==(const TimerNode &rhs)
+    const float get_interval()
     {
-        // 仅仅判断时间
-        return timer_ == rhs.timer_;
+        return interval_;
     }
+    const bool get_repeat_()
+    {
+        return repeat_;
+    }
+    void set_repeat(bool repeat)
+    {
+        repeat_ = repeat;
+    }
+    // bool operator==(const TimerNode &rhs)
+    // {
+    //     // 仅仅判断时间
+    //     return timer_ == rhs.timer_;
+    // }
     bool operator<(const TimerNode &rhs)
     {
         return timer_ < rhs.timer_;
+    }
+
+    friend bool operator<(const TimerNode &lhs, const TimerNode &rhs)
+    {
+        return lhs.timer_ < rhs.timer_;
     }
     bool operator<=(const TimerNode &rhs)
     {
@@ -81,6 +99,8 @@ public:
 
 private:
     int node_seq_;
+    int interval_;
+    bool repeat_;
     TimerStamp timer_;
     TimerOutCallBack cb_;
 };

@@ -115,10 +115,10 @@ void EventLoop::assert_in_loop()
     }
 }
 
-TimerNode EventLoop::run_after(float delay, TimerOutCallBack cb)
+TimerNode EventLoop::run_after(float delay, TimerOutCallBack cb, bool repeat)
 {
     assert(delay >= 0);
-    return timer_queue_->add_timer(delay, cb);
+    return timer_queue_->add_timer(delay, cb, repeat);
 }
 
 void EventLoop::cancel(TimerNode node)

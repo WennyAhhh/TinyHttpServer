@@ -110,6 +110,19 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
+#=============================================================================
+# Target rules for targets named time_test
+
+# Build rule for target.
+time_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 time_test
+.PHONY : time_test
+
+# fast build rule for target.
+time_test/fast:
+	$(MAKE) -f unit_test/time_test/CMakeFiles/time_test.dir/build.make unit_test/time_test/CMakeFiles/time_test.dir/build
+.PHONY : time_test/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -118,6 +131,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... time_test"
 .PHONY : help
 
 

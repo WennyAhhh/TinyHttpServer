@@ -61,7 +61,7 @@ void Epoller::update_channel(Channel *channel)
     // 更新
     PollBase::assert_in_loop_thread();
     const int status = channel->status();
-    // int fd = channel->fd();
+    int fd = channel->fd();
     LOG_INFO("fd = %d events = %d index = %d", channel->fd(), channel->events(), channel->status());
     if (status == static_cast<int>(POLL_TAG::NEW) || status == static_cast<int>(POLL_TAG::DEL))
     {
@@ -82,6 +82,8 @@ void Epoller::update_channel(Channel *channel)
             assert(pItem == channels_.end());
             assert(pItem->second == channel);
         }
+        channel->set_status(static_cast<int>(POLL_TAG::ADD));
+        update(EPOLL_CTL_ADD, channel);
     }
     else
     {

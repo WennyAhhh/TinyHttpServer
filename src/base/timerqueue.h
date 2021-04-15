@@ -21,7 +21,7 @@ public:
     static const int LIMIT = 1024;
     explicit TimerQueue(EventLoop *loop);
     ~TimerQueue();
-    TimerNode add_timer(float interval, TimerOutCallBack cb);
+    TimerNode add_timer(float interval, TimerOutCallBack cb, bool repeat);
     void cancel(TimerNode node);
 
 private:

@@ -5,7 +5,7 @@ Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
                                             fd_(fd),
                                             events_(0),
                                             revents_(0),
-                                            status_(-1)
+                                            status_(0)
 {
 }
 

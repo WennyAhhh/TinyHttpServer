@@ -88,8 +88,10 @@ void FourHeap::destory_(size_t pos)
             shif_up_(pos);
         }
     }
-    index_.erase(heap_.back().get_node_seq());
+    int seq = heap_.back().get_node_seq();
+    index_.erase(seq);
     heap_.pop_back();
+    int k = heap_.size();
 }
 
 void FourHeap::push(TimerNode &node)
@@ -97,13 +99,14 @@ void FourHeap::push(TimerNode &node)
     int seq = node.get_node_seq();
     if (index_.count(seq) == 0)
     {
-        index_[seq] = heap_.size();
+        int pos = heap_.size();
+        index_[seq] = pos;
         heap_.push_back(node);
         if (heap_.size() == 1)
         {
             return;
         }
-        shif_up_(seq);
+        shif_up_(pos);
     }
     else
     {
@@ -130,12 +133,12 @@ void FourHeap::pop()
 {
     assert(heap_.size() > 0);
     swap_(0, heap_.size() - 1);
-    destory_(0);
+    destory_(heap_.size() - 1);
 }
 
 bool FourHeap::remove(int id)
 {
-    if (index_.count(id) == 1)
+    if (index_.count(id) == 0)
     {
         return false;
     }
