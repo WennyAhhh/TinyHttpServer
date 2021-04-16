@@ -19,9 +19,9 @@ int createEventfd()
 EventLoop::EventLoop() : poller_(new Epoller(this)),
                          thread_id_(std::this_thread::get_id()),
                          wakefd_(createEventfd()),
-                         wake_channel(std::make_unique<Channel>(this, wakefd_)),
                          timer_queue_(std::make_unique<TimerQueue>(this))
 {
+    wake_channel_ = std::make_unique<Channel>(this, wakefd_);
     LOG_INFO("EventLoop created %p", this);
     if (LoopInThisThread != nullptr)
     {
@@ -32,8 +32,8 @@ EventLoop::EventLoop() : poller_(new Epoller(this)),
     {
         LoopInThisThread = this;
     }
-    wake_channel->set_read_cb(std::bind(&EventLoop::handle_read_, this));
-    wake_channel->enable_reading();
+    wake_channel_->set_read_cb(std::bind(&EventLoop::handle_read_, this));
+    wake_channel_->enable_reading();
 }
 
 EventLoop::~EventLoop()
@@ -68,7 +68,7 @@ void EventLoop::remvoe_channel(Channel *channel)
     if (event_handling)
     {
         // 如果此时事件正在处理， 需要判断移除的是否的fd是否还在处理
-        assert(cur_channel == channel || std::find(active_channels_.begin(), active_channels_.end(), channel) == active_channels_.end());
+        assert(cur_channel_ == channel || std::find(active_channels_.begin(), active_channels_.end(), channel) == active_channels_.end());
     }
     poller_->remove_channel(channel);
 }
@@ -92,10 +92,10 @@ void EventLoop::loop()
         // 因为返回的是指针， 用引用好像有些不合适
         for (Channel *channel : active_channels_)
         {
-            cur_channel = channel;
+            cur_channel_ = channel;
             channel->handle_event();
         }
-        cur_channel = nullptr;
+        cur_channel_ = nullptr;
         dopending_func();
     }
     LOG_INFO("EventLoop %p stop", this);
@@ -115,15 +115,15 @@ void EventLoop::assert_in_loop()
     }
 }
 
-TimerNode EventLoop::run_after(float delay, TimerOutCallBack cb, bool repeat)
+TimerId EventLoop::run_after(float delay, TimerOutCallBack cb, bool repeat)
 {
     assert(delay >= 0);
     return timer_queue_->add_timer(delay, cb, repeat);
 }
 
-void EventLoop::cancel(TimerNode node)
+void EventLoop::cancel(TimerId id)
 {
-    timer_queue_->cancel(node);
+    timer_queue_->cancel(id);
 }
 
 void EventLoop::run_in_loop(Functor cb)
@@ -177,7 +177,7 @@ void EventLoop::dopending_func()
         functors.swap(pending_func_);
     }
 
-    for (const Functor &functor : functors)
+    for (Functor &functor : functors)
     {
         functor();
     }

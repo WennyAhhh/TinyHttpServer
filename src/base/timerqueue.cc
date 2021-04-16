@@ -67,7 +67,7 @@ TimerQueue::~TimerQueue()
     ::close(timerfd_);
 }
 
-TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb, bool repeat)
+TimerId TimerQueue::add_timer(float interval, TimerOutCallBack cb, bool repeat)
 {
     int node_seq = get_();
     assert(node_seq >= 0);
@@ -75,7 +75,7 @@ TimerNode TimerQueue::add_timer(float interval, TimerOutCallBack cb, bool repeat
     TimerStamp timer = TimerNode::now() + TimerNode::tarns_mirco(interval);
     TimerNode node(node_seq, interval, timer, cb, repeat);
     loop_->run_in_loop(std::bind(&TimerQueue::add_timer_in_loop_, this, node));
-    return node;
+    return node_seq;
 }
 
 void TimerQueue::clear_()
@@ -84,9 +84,9 @@ void TimerQueue::clear_()
     cancel_set_.clear();
 }
 
-void TimerQueue::cancel(TimerNode node)
+void TimerQueue::cancel(TimerId id)
 {
-    loop_->run_in_loop(std::bind(&TimerQueue::cancel_timer_in_loop_, this, node));
+    loop_->run_in_loop(std::bind(&TimerQueue::cancel_timer_in_loop_, this, id));
 }
 
 void TimerQueue::add_timer_in_loop_(TimerNode node)
@@ -99,17 +99,17 @@ void TimerQueue::add_timer_in_loop_(TimerNode node)
     }
 }
 
-void TimerQueue::cancel_timer_in_loop_(TimerNode node)
+void TimerQueue::cancel_timer_in_loop_(TimerId id)
 {
     loop_->assert_in_loop();
-    if (timer_list_->find(node))
+    if (timer_list_->find(id))
     {
-        timer_list_->remove(node);
+        timer_list_->remove(id);
     }
     else if (calling_expired_)
     {
         // 存在嵌套
-        cancel_set_.insert(node);
+        cancel_set_.insert(id);
     }
 }
 
@@ -117,13 +117,13 @@ void TimerQueue::handle_read_()
 {
     loop_->assert_in_loop();
     std::vector<TimerNode> expired = get_expired_();
-    is_cancel_ = true;
+    calling_expired_ = true;
     cancel_set_.clear();
     for (const auto &e : expired)
     {
         e.run();
     }
-    is_cancel_ = false;
+    calling_expired_ = false;
 
     reset_(expired);
 }
@@ -133,12 +133,15 @@ void TimerQueue::reset_(std::vector<TimerNode> &expired)
     // 暂时只支持延长
     for (auto &e : expired)
     {
-        if (e.get_repeat_() && cancel_set_.find(e) == cancel_set_.end())
+        if (e.get_repeat_() && cancel_set_.find(e.get_node_seq()) == cancel_set_.end())
         {
             TimerStamp timer = TimerNode::now() + TimerNode::tarns_mirco(e.get_interval());
-            e.set_timer_stamp(timer);
             // e.set_timer_stamp(Clock::now() + e.get_interval());
-            timer_list_->push(e);
+            timer_list_->reset(e, timer);
+        }
+        if (!e.get_repeat_())
+        {
+            cancel(e.get_node_seq());
         }
     }
     if (!timer_list_->empty())
@@ -151,15 +154,15 @@ void TimerQueue::reset_(std::vector<TimerNode> &expired)
 std::vector<TimerNode> TimerQueue::get_expired_()
 {
     TimerStamp ts = TimerNode::now();
-    std::vector<TimerNode> res;
-    while (!timer_list_->empty())
-    {
-        TimerNode tar = timer_list_->front();
-        if (tar.get_timer() > ts)
-            break;
-        res.emplace_back(tar);
-        timer_list_->pop();
-    }
+    std::vector<TimerNode> res = timer_list_->get_k(ts);
+    // while (!timer_list_->empty())
+    // {
+    //     TimerNode tar = timer_list_->front();
+    //     if (tar.get_timer() > ts)
+    //         break;
+    //     res.emplace_back(tar);
+    //     // timer_list_->pop();
+    // }
     return res;
 }
 

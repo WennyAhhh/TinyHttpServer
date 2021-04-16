@@ -33,8 +33,8 @@ public:
     void update_channel(Channel *channel);
     void remvoe_channel(Channel *channel);
     const EventLoop *get_curthread();
-    TimerNode run_after(float delay, TimerOutCallBack cb, bool repeat = true);
-    void cancel(TimerNode);
+    TimerId run_after(float delay, TimerOutCallBack cb, bool repeat = true);
+    void cancel(TimerId);
 
 private:
     typedef std::vector<Channel *> ChannelList;
@@ -50,10 +50,10 @@ private:
     std::thread::id thread_id_;
     std::unique_ptr<PollBase> poller_;
     std::unique_ptr<TimerQueue> timer_queue_;
-    std::unique_ptr<Channel> wake_channel;
+    std::unique_ptr<Channel> wake_channel_;
     std::vector<Functor> pending_func_;
 
-    Channel *cur_channel;
+    Channel *cur_channel_;
     ChannelList active_channels_;
     bool looping_{false};
     int wakefd_;

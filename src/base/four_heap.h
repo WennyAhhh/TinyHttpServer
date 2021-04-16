@@ -3,9 +3,11 @@
 #define FOUR_HEAP_H
 #include <ctime>
 #include <vector>
+#include <queue>
 #include <map>
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 
 #include "timernode.h"
 
@@ -19,9 +21,12 @@ public:
     TimerNode front() const;
     void pop();
     bool find(TimerNode &node) const;
+    bool find(TimerId) const;
     bool remove(int id);
     bool remove(TimerNode &node);
     void reset(int id, TimerStamp &timer);
+    void reset(TimerNode &, TimerStamp &);
+    std::vector<TimerNode> get_k(TimerStamp &);
     bool empty()
     {
         return heap_.empty();

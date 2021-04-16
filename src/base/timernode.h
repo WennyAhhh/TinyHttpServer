@@ -8,6 +8,7 @@
 typedef std::function<void()> TimerOutCallBack;
 typedef std::chrono::steady_clock Clock;
 typedef std::chrono::steady_clock::time_point TimerStamp;
+typedef int TimerId;
 // todo 模板， 移动构造
 class TimerNode
 {
@@ -90,12 +91,12 @@ public:
     {
         return timer_ <= rhs.timer_;
     }
-    TimerNode &operator=(const TimerNode &rhs)
-    {
-        node_seq_ = rhs.node_seq_;
-        timer_ = rhs.timer_;
-        cb_ = rhs.cb_;
-    }
+    // TimerNode &operator=(const TimerNode &rhs)
+    // {
+    //     node_seq_ = rhs.node_seq_;
+    //     timer_ = rhs.timer_;
+    //     cb_ = rhs.cb_;
+    // }
 
 private:
     int node_seq_;

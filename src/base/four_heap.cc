@@ -30,28 +30,28 @@ int FourHeap::shif_down_(size_t pos)
     int n = heap_.size();
     int j = pos << 2 + 1;
     int i = pos;
-    int maxi_index = -1;
+    int mini_index = -1;
     while (j < n)
     {
         // 赋值那边做了深拷贝。
-        auto maxi = heap_[i].get_timer();
+        auto mini = heap_[i].get_timer();
         for (int k = j; k < n && k < j + 4; k++)
         {
-            if (maxi < heap_[k].get_timer())
+            if (mini > heap_[k].get_timer())
             {
-                maxi = heap_[k].get_timer();
-                maxi_index = k;
+                mini = heap_[k].get_timer();
+                mini_index = k;
             }
         }
-        if (maxi_index == -1)
+        if (mini_index == -1)
         {
             break;
         }
-        swap_(i, maxi_index);
-        i = maxi_index;
+        swap_(i, mini_index);
+        i = mini_index;
         j = i << 2 + 1;
         cnt++;
-        maxi_index = -1;
+        mini_index = -1;
     }
     return cnt;
 }
@@ -83,15 +83,14 @@ void FourHeap::destory_(size_t pos)
     if (pos < n)
     {
         swap_(pos, n);
-        if (shif_down_(pos) == 0)
-        {
-            shif_up_(pos);
-        }
     }
     int seq = heap_.back().get_node_seq();
     index_.erase(seq);
     heap_.pop_back();
-    int k = heap_.size();
+    if (shif_down_(pos) == 0)
+    {
+        shif_up_(pos);
+    }
 }
 
 void FourHeap::push(TimerNode &node)
@@ -124,9 +123,14 @@ TimerNode FourHeap::front() const
     return heap_.front();
 }
 
+bool FourHeap::find(TimerId id) const
+{
+    return index_.count(id) > 0;
+}
+
 bool FourHeap::find(TimerNode &node) const
 {
-    return index_.count(node.get_node_seq()) > 0;
+    return find(node.get_node_seq());
 }
 
 void FourHeap::pop()
@@ -156,4 +160,35 @@ void FourHeap::reset(int id, TimerStamp &timer)
 
     heap_[index_[id]].set_timer_stamp(timer);
     shif_down_(index_[id]);
+}
+
+void FourHeap::reset(TimerNode &node, TimerStamp &timer)
+{
+    reset(node.get_node_seq(), timer);
+}
+
+std::vector<TimerNode> FourHeap::get_k(TimerStamp &timer)
+{
+    std::vector<TimerNode> res;
+    int pre = 0;
+    std::priority_queue<TimerNode> q;
+    int top = 0;
+    int n = heap_.size();
+    q.push(heap_[top]);
+    while (!q.empty())
+    {
+        TimerNode curr_node = q.top();
+        q.pop();
+        if (curr_node.get_timer() > timer)
+        {
+            break;
+        }
+        res.emplace_back(curr_node);
+        top = index_[curr_node.get_node_seq()] >> 2;
+        for (int i = 1; top + i < n && i <= 4; ++i)
+        {
+            q.push(heap_[top + i]);
+        }
+    }
+    return res;
 }
