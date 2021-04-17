@@ -6,6 +6,7 @@
 #include <string_view>
 #include <string.h>
 #include <arpa/inet.h>
+#include "base/log.h"
 
 class InetAddress
 {

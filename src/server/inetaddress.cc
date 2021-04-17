@@ -14,5 +14,8 @@ InetAddress::InetAddress(std::string_view ip, uint16_t port)
     memset(&addr_, 0, sizeof addr_);
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(port);
-    inet_pton(AF_INET, ip.data(), &addr_.sin_addr);
+    if (inet_pton(AF_INET, ip.data(), &addr_.sin_addr) <= 0)
+    {
+        LOG_ERROR("InetAddress inet_pton");
+    }
 }
