@@ -22,6 +22,7 @@ public:
     explicit TimerQueue(EventLoop *loop);
     ~TimerQueue();
     TimerId add_timer(float interval, TimerOutCallBack cb, bool repeat);
+    TimerId extend_timer(float interval, TimerId id, bool repeat);
     void cancel(TimerId id);
 
 private:
@@ -29,6 +30,7 @@ private:
     void reset_(std::vector<TimerNode> &);
     void add_timer_in_loop_(TimerNode);
     void cancel_timer_in_loop_(TimerId);
+    void extend_timer_in_loop_(float, TimerId, bool repeat);
     void handle_read_();
     int get_();
     void del_(TimerNode &);

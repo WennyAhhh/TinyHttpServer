@@ -37,6 +37,11 @@ public:
         cb_();
     }
 
+    void add(float interval)
+    {
+        timer_ += tarns_mirco(interval);
+    }
+
     const int get_node_seq()
     {
         return node_seq_;

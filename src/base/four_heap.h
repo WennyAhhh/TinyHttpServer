@@ -22,6 +22,7 @@ public:
     void pop();
     bool find(TimerNode &node) const;
     bool find(TimerId) const;
+    void extend(float, TimerId, bool);
     bool remove(int id);
     bool remove(TimerNode &node);
     void reset(int id, TimerStamp &timer);

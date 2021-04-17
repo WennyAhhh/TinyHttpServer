@@ -87,7 +87,7 @@ void FourHeap::destory_(size_t pos)
     int seq = heap_.back().get_node_seq();
     index_.erase(seq);
     heap_.pop_back();
-    if (shif_down_(pos) == 0)
+    if (pos < heap_.size() && shif_down_(pos) == 0)
     {
         shif_up_(pos);
     }
@@ -170,6 +170,10 @@ void FourHeap::reset(TimerNode &node, TimerStamp &timer)
 std::vector<TimerNode> FourHeap::get_k(TimerStamp &timer)
 {
     std::vector<TimerNode> res;
+    if (heap_.size() == 0)
+    {
+        return res;
+    }
     int pre = 0;
     std::priority_queue<TimerNode> q;
     int top = 0;
@@ -191,4 +195,14 @@ std::vector<TimerNode> FourHeap::get_k(TimerStamp &timer)
         }
     }
     return res;
+}
+
+void FourHeap::extend(float interval, TimerId id, bool repeat)
+{
+    int pos = index_[id];
+    TimerNode &node = heap_[pos];
+    node.set_repeat(repeat);
+    interval = interval > 0 ? interval : node.get_interval();
+    node.add(interval);
+    shif_down_(pos);
 }

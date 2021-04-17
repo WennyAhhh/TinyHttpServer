@@ -34,6 +34,7 @@ public:
     void remvoe_channel(Channel *channel);
     const EventLoop *get_curthread();
     TimerId run_after(float delay, TimerOutCallBack cb, bool repeat = true);
+    TimerId extend_timer(float delay, TimerId id, bool repeat = true);
     void cancel(TimerId);
 
 private:

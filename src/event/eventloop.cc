@@ -121,6 +121,11 @@ TimerId EventLoop::run_after(float delay, TimerOutCallBack cb, bool repeat)
     return timer_queue_->add_timer(delay, cb, repeat);
 }
 
+TimerId EventLoop::extend_timer(float delay, TimerId id, bool repeat)
+{
+    return timer_queue_->extend_timer(delay, id, repeat);
+}
+
 void EventLoop::cancel(TimerId id)
 {
     timer_queue_->cancel(id);

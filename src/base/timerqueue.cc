@@ -78,6 +78,11 @@ TimerId TimerQueue::add_timer(float interval, TimerOutCallBack cb, bool repeat)
     return node_seq;
 }
 
+TimerId TimerQueue::extend_timer(float interval, TimerId id, bool repeat)
+{
+    loop_->run_in_loop(std::bind(&TimerQueue::extend_timer_in_loop_, this, interval, id, repeat));
+}
+
 void TimerQueue::clear_()
 {
     timer_list_->clear();
@@ -113,6 +118,15 @@ void TimerQueue::cancel_timer_in_loop_(TimerId id)
     }
 }
 
+void TimerQueue::extend_timer_in_loop_(float interval, TimerId id, bool repeat)
+{
+    loop_->assert_in_loop();
+    if (timer_list_->find(id))
+    {
+        timer_list_->extend(interval, id, repeat);
+    }
+}
+
 void TimerQueue::handle_read_()
 {
     loop_->assert_in_loop();
@@ -141,7 +155,7 @@ void TimerQueue::reset_(std::vector<TimerNode> &expired)
         }
         if (!e.get_repeat_())
         {
-            cancel(e.get_node_seq());
+            cancel_timer_in_loop_(e.get_node_seq());
         }
     }
     if (!timer_list_->empty())
