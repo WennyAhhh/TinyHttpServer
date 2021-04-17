@@ -1,7 +1,0 @@
-/home/admin/source/TinyHttpServer/build/CMakeFiles/rebuild_cache.dir
-/home/admin/source/TinyHttpServer/build/CMakeFiles/edit_cache.dir
-/home/admin/source/TinyHttpServer/build/unit_test/CMakeFiles/rebuild_cache.dir
-/home/admin/source/TinyHttpServer/build/unit_test/CMakeFiles/edit_cache.dir
-/home/admin/source/TinyHttpServer/build/unit_test/time_test/CMakeFiles/rebuild_cache.dir
-/home/admin/source/TinyHttpServer/build/unit_test/time_test/CMakeFiles/time_test.dir
-/home/admin/source/TinyHttpServer/build/unit_test/time_test/CMakeFiles/edit_cache.dir
