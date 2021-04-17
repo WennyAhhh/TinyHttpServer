@@ -18,7 +18,11 @@ void Log::init(
     time_stamp_ = p_TimerStamp;
     date_stamp_ = p_datestamp;
     switch_log();
-    running_ = true;
+    if (running_ == false)
+    {
+        running_ = true;
+        cond_.notify_one();
+    }
 }
 
 void Log::switch_log()
@@ -75,6 +79,8 @@ void Log::append(const char *logline, int len)
 
 void Log::thread_func()
 {
+    while (!running_)
+        ;
     assert(running_ == true);
     auto newBuffer1 = std::make_unique<Buffer>();
     auto newBuffer2 = std::make_unique<Buffer>();

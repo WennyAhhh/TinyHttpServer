@@ -27,6 +27,7 @@ public:
     ~Log()
     {
         printf("~Log\n");
+        fclose(fp_);
         if (running_)
         {
             stop();

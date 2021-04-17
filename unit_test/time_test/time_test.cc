@@ -14,6 +14,7 @@ void cancel(TimerId timer)
 {
     g_loop->cancel(timer);
     cout << "cancel" << endl;
+    g_loop->quit();
 }
 
 void func()
@@ -34,13 +35,13 @@ void func()
     // g_loop->run_after(4, bind(cancel, id6), false);
     // g_loop->run_after(4, bind(cancel, id7), false);
     // g_loop->run_after(4, bind(cancel, id8), false);
-    TimerId id5 = g_loop->run_after(2, std::bind(print, "PRO3"));
-    for (int i = 0; i < 10; i++)
-    {
-        g_loop->extend_timer(-1, id5);
-        cout << "extend" << endl;
-    }
-    g_loop->extend_timer(1, id5, false);
+    TimerId id5 = g_loop->run_after(1, std::bind(print, "PRO3"));
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     g_loop->extend_timer(2, id5);
+    //     cout << "extend" << endl;
+    // }
+    g_loop->run_after(3, bind(cancel, id5), false);
 }
 
 int main()
