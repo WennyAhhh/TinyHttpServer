@@ -19,3 +19,8 @@ InetAddress::InetAddress(std::string_view ip, uint16_t port)
         LOG_ERROR("InetAddress inet_pton");
     }
 }
+
+const sockaddr *InetAddress::get_addr() const
+{
+    return reinterpret_cast<const sockaddr *>(&addr_);
+}

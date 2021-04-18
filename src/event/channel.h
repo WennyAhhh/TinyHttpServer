@@ -16,7 +16,7 @@ public:
     static const int kWriteEvent = POLLOUT;
     typedef std::function<void()> EventCallBack;
     Channel(EventLoop *loop, int fd);
-
+    ~Channel();
     void handle_event();
     void set_read_cb(const EventCallBack &cb)
     {

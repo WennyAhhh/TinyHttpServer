@@ -9,6 +9,12 @@ Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
 {
 }
 
+Channel::~Channel()
+{
+    disable_all();
+    remove();
+}
+
 void Channel::handle_event()
 {
     // 分发事件
