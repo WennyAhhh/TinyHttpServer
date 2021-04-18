@@ -20,6 +20,9 @@ Acceptor::Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reusepo
 
 Acceptor::~Acceptor()
 {
+
+    // 不需要loop->quit()
+    // channel智能指针会自动释放
     ::close(idle_fd_);
 }
 
