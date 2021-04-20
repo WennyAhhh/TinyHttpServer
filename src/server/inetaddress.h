@@ -20,6 +20,7 @@ public:
 
     const sockaddr *get_addr() const;
     const sa_family_t get_family() const { return addr_.sin_family; }
+    const std::string to_ip_port() const;
 
     void set_addr(const sockaddr_in &addr) { addr_ = addr; }
 

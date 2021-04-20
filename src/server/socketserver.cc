@@ -109,3 +109,9 @@ void SocketServer::set_reuse_port(bool on)
     }
 #endif
 }
+
+void SocketServer::set_keep_alive(bool on)
+{
+    int opt = on ? 1 : 0;
+    ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof opt));
+}

@@ -20,6 +20,16 @@ InetAddress::InetAddress(std::string_view ip, uint16_t port)
     }
 }
 
+const std::string InetAddress::to_ip_port() const
+{
+    assert(addr_.sin_family == AF_INET);
+    char buf[64];
+    ::inet_ntop(AF_INET, &addr_.sin_addr, buf, static_cast<socklen_t>(sizeof buf));
+    std::string ip = std::string(buf);
+    unsigned short int ports = ::ntohs(addr_.sin_port);
+    return ip + ":" + std::to_string(ports);
+}
+
 const sockaddr *InetAddress::get_addr() const
 {
     return reinterpret_cast<const sockaddr *>(&addr_);

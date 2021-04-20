@@ -26,6 +26,7 @@ public:
     int fd() const { return sockfd_; }
     void set_reuse_addr(bool);
     void set_reuse_port(bool);
+    void set_keep_alive(bool);
 
     void bind(const InetAddress &inet_addr);
     void listen();

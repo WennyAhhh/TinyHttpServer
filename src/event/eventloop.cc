@@ -139,11 +139,11 @@ void EventLoop::run_in_loop(Functor cb)
     }
     else
     {
-        queue_in_loop_(std::move(cb));
+        queue_in_loop(std::move(cb));
     }
 }
 
-void EventLoop::queue_in_loop_(Functor cb)
+void EventLoop::queue_in_loop(Functor cb)
 {
     {
         std::lock_guard<std::mutex> lk(mtx_);

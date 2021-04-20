@@ -29,6 +29,7 @@ public:
     bool is_in_loop_thread();
     //
     void run_in_loop(Functor cb);
+    void queue_in_loop(Functor cb);
 
     void update_channel(Channel *channel);
     void remvoe_channel(Channel *channel);
@@ -41,7 +42,6 @@ private:
     typedef std::vector<Channel *> ChannelList;
     void wakeup_();
     void handle_read_();
-    void queue_in_loop_(Functor cb);
     void dopending_func();
     // 如果暴露给其他线程就需要是原子的
     std::atomic<bool> quit_{false};

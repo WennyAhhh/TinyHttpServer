@@ -35,13 +35,13 @@ void func()
     // g_loop->run_after(4, bind(cancel, id6), false);
     // g_loop->run_after(4, bind(cancel, id7), false);
     // g_loop->run_after(4, bind(cancel, id8), false);
-    TimerId id5 = g_loop->run_after(1, std::bind(print, "PRO3"));
+    TimerId id5 = g_loop->run_after(3, std::bind(print, "PRO3"));
     // for (int i = 0; i < 10; i++)
     // {
     //     g_loop->extend_timer(2, id5);
     //     cout << "extend" << endl;
     // }
-    g_loop->run_after(3, bind(cancel, id5), false);
+    g_loop->run_after(20, bind(cancel, id5), false);
 }
 
 int main()

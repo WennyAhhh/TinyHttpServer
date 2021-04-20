@@ -26,6 +26,10 @@ public:
     {
         write_call_back_ = cb;
     }
+    void set_close_cb(const EventCallBack &cb)
+    {
+        close_call_back_ = cb;
+    }
     void set_error_cb(const EventCallBack &cb)
     {
         error_call_back_ = cb;
@@ -117,6 +121,7 @@ private:
     bool added_to_loop{false};
     EventCallBack read_call_back_;
     EventCallBack write_call_back_;
+    EventCallBack close_call_back_;
     EventCallBack error_call_back_;
 };
 #endif
