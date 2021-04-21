@@ -32,6 +32,8 @@ typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer>)> M
 //     static const int CONNECTED = 2;
 //     static const int DISCONNECTING = 3;
 // };
+void default_connection_cb(const TcpConnectionPtr &conn);
+void default_message_cb(const TcpConnectionPtr &, std::shared_ptr<Buffer> buf);
 
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {

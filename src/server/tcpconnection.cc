@@ -18,10 +18,10 @@ void default_message_cb(const TcpConnection &, std::shared_ptr<Buffer> buf)
     buf->retrieve_all();
 }
 
-void default_message_cb(const TcpConnection &, size_t len)
-{
-    LOG_INFO("high water mark: %d", len);
-}
+// void default_message_cb(const TcpConnection &, size_t len)
+// {
+//     LOG_INFO("high water mark: %d", len);
+// }
 
 TcpConnection::TcpConnection(EventLoop *loop,
                              const std::string &name_arg,

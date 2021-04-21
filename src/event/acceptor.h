@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "channel.h"
+#include "server/inetaddress.h"
 #include "server/socketserver.h"
 
 typedef std::function<void(int, const InetAddress &)> NewConnectionCallBack;
@@ -17,7 +18,7 @@ public:
     Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reuseport, bool linger_close = false);
     ~Acceptor();
 
-    void set_conn_callback(const NewConnectionCallBack &cb)
+    void set_new_conn_callback(const NewConnectionCallBack &cb)
     {
         new_conn_callback_ = cb;
     }
