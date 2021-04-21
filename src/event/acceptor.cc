@@ -22,7 +22,8 @@ Acceptor::~Acceptor()
 {
 
     // 不需要loop->quit()
-    // channel智能指针会自动释放
+    accept_channel_->disable_all();
+    accept_channel_->remove();
     ::close(idle_fd_);
 }
 

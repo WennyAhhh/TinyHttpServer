@@ -52,18 +52,18 @@ void reset_timerfd(int timerfd, TimerNode expiration)
 
 TimerQueue::TimerQueue(EventLoop *loop) : loop_(loop),
                                           timerfd_(create_timerfd()),
-                                          timer_channel_(loop, timerfd_),
+                                          timer_channel_(std::make_unique<Channel>(loop, timerfd_)),
                                           timer_list_(std::make_unique<FourHeap>())
 {
-    timer_channel_.set_read_cb(std::bind(&TimerQueue::handle_read_, this));
-    timer_channel_.enable_reading();
+    timer_channel_->set_read_cb(std::bind(&TimerQueue::handle_read_, this));
+    timer_channel_->enable_reading();
 }
 
 TimerQueue::~TimerQueue()
 {
     clear_();
-    timer_channel_.disable_all();
-    timer_channel_.remove();
+    timer_channel_->disable_all();
+    timer_channel_->remove();
     ::close(timerfd_);
 }
 

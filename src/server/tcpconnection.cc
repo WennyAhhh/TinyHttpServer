@@ -103,6 +103,50 @@ void TcpConnection::shutdown()
     }
 }
 
+void TcpConnection::force_close()
+{
+    if (status_ == Status::CONNECTED || status_ == Status::CONNECTING)
+    {
+        set_status_(Status::DISCONNECTING);
+        // this可以？
+        loop_->queue_in_loop(std::bind(&TcpConnection::force_close_in_loop_, shared_from_this()));
+    }
+}
+
+void TcpConnection::start_read()
+{
+    loop_->run_in_loop(std::bind(&TcpConnection::start_read_in_loop_, this));
+}
+
+void TcpConnection::stop_read()
+{
+    loop_->run_in_loop(std::bind(&TcpConnection::stop_read_in_loop_, this));
+}
+
+void TcpConnection::build_connect()
+{
+    loop_->assert_in_loop();
+    assert(status_ == Status::CONNECTING);
+    set_status_(Status::CONNECTED);
+    channel_->tie(shared_from_this());
+    channel_->enable_reading();
+
+    connection_cb_(shared_from_this());
+}
+
+void TcpConnection::destroy_connect()
+{
+    loop_->assert_in_loop();
+    if (status_ == Status::CONNECTED)
+    {
+        set_status_(Status::DISCONNECTING);
+        channel_->disable_all();
+
+        connection_cb_(shared_from_this());
+    }
+    channel_->remove();
+}
+
 void TcpConnection::send_in_loop_(const void *data, size_t len)
 {
     loop_->assert_in_loop();
@@ -160,5 +204,38 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
         {
             channel_->enable_writing();
         }
+    }
+}
+
+void TcpConnection::shutdown_in_loop_()
+{
+}
+
+void TcpConnection::force_close_in_loop_()
+{
+    loop_->assert_in_loop();
+    if (status_ == Status::CONNECTED && status_ == Status::CONNECTING)
+    {
+        handle_close_();
+    }
+}
+
+void TcpConnection::start_read_in_loop_()
+{
+    loop_->assert_in_loop();
+    if (!reading_ || !channel_->is_reading())
+    {
+        channel_->enable_reading();
+        reading_ = true;
+    }
+}
+
+void TcpConnection::stop_read_in_loop_()
+{
+    loop_->assert_in_loop();
+    if (reading_ || channel_->is_reading())
+    {
+        channel_->disable_reading();
+        reading_ = false;
     }
 }

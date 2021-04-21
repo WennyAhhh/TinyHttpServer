@@ -42,7 +42,7 @@ private:
     size_t seq_limit_;
     size_t index_;
     const int timerfd_;
-    Channel timer_channel_;
+    std::unique_ptr<Channel> timer_channel_;
     std::atomic<bool> calling_expired_{false};
     EventLoop *loop_;
 };

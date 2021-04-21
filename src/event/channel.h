@@ -18,107 +18,68 @@ public:
     Channel(EventLoop *loop, int fd);
     ~Channel();
     void handle_event();
-    void set_read_cb(const EventCallBack &cb)
-    {
-        read_call_back_ = cb;
-    }
-    void set_write_cb(const EventCallBack &cb)
-    {
-        write_call_back_ = cb;
-    }
-    void set_close_cb(const EventCallBack &cb)
-    {
-        close_call_back_ = cb;
-    }
-    void set_error_cb(const EventCallBack &cb)
-    {
-        error_call_back_ = cb;
-    }
+    void set_read_cb(const EventCallBack &cb) { read_call_back_ = cb; }
+    void set_write_cb(const EventCallBack &cb) { write_call_back_ = cb; }
+    void set_close_cb(const EventCallBack &cb) { close_call_back_ = cb; }
+    void set_error_cb(const EventCallBack &cb) { error_call_back_ = cb; }
 
-    int fd() const
-    {
-        return fd_;
-    }
-    int events() const
-    {
-        return events_;
-    }
-
-    void set_revents(int _revents)
-    {
-        revents_ = _revents;
-    }
-    bool is_none_event() const
-    {
-        return events_ == kNoneEvent;
-    }
+    int fd() const { return fd_; }
+    int events() const { return events_; }
+    void set_revents(int _revents) { revents_ = _revents; }
+    bool is_none_event() const { return events_ == kNoneEvent; }
 
     // 设置事件
     void enable_reading()
     {
         events_ |= kReadEvent;
-        update();
+        update_();
     }
     void disable_reading()
     {
         events_ &= ~kReadEvent;
-        update();
+        update_();
     }
     void enable_writing()
     {
         events_ |= kWriteEvent;
-        update();
+        update_();
     }
     void disable_writing()
     {
         events_ &= ~kWriteEvent;
-        update();
+        update_();
     }
     void disable_all()
     {
         events_ = kNoneEvent;
-        update();
+        update_();
     }
-    bool is_writing() const
-    {
-        return events_ & kWriteEvent;
-    }
-    bool is_reading() const
-    {
-        return events_ & kReadEvent;
-    }
+    bool is_writing() const { return events_ & kWriteEvent; }
+    bool is_reading() const { return events_ & kReadEvent; }
 
     // channel在epoller的状态
-    int status()
-    {
-        return status_;
-    }
-    void set_status(int status)
-    {
-        status_ = status;
-    }
+    int status() { return status_; }
+    void set_status(int status) { status_ = status; }
 
-    EventLoop *ownerLoop()
-    {
-        return loop_;
-    }
+    EventLoop *ownerLoop() { return loop_; }
 
+    void tie(const std::shared_ptr<void> &tie);
     void remove();
 
 private:
-    void update();
+    void update_();
+    void handle_event_guard_();
 
     EventLoop *loop_;
-    // 记录的fd
     const int fd_;
-    // 事件的类型
     int events_;
-    //
     int revents_;
-    // channel在PollBase中拥有的下标
     int status_;
+    bool tied_;
+    std::weak_ptr<void> tie_;
 
-    bool added_to_loop{false};
+    bool event_handing_{false};
+    bool added_to_loop_{false};
     EventCallBack read_call_back_;
     EventCallBack write_call_back_;
     EventCallBack close_call_back_;

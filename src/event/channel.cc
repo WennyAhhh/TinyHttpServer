@@ -11,12 +11,32 @@ Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
 
 Channel::~Channel()
 {
-    disable_all();
-    remove();
+    assert(!event_handing_);
+    assert(!added_to_loop_);
+    // disable_all();
+    // remove();
 }
 
 void Channel::handle_event()
 {
+    std::shared_ptr<void> guard;
+    if (tied_)
+    {
+        guard = tie_.lock();
+        if (guard)
+        {
+            handle_event_guard_();
+        }
+    }
+    else
+    {
+        handle_event_guard_();
+    }
+}
+
+void Channel::handle_event_guard_()
+{
+    event_handing_ = true;
     // 分发事件
     // 文件描述符没有打开
     if (revents_ & POLLNVAL)
@@ -46,17 +66,27 @@ void Channel::handle_event()
             write_call_back_();
         }
     }
+
+    event_handing_ = false;
 }
 
 // update用于更新 PollBase里面的channel， 可以通过channel中的fd进行检索
-void Channel::update()
+void Channel::update_()
 {
+    added_to_loop_ = true;
     loop_->update_channel(this);
+}
+
+void Channel::tie(const std::shared_ptr<void> &tie)
+{
+    //
+    tie_ = tie;
+    tied_ = true;
 }
 
 void Channel::remove()
 {
     assert(is_none_event());
-    added_to_loop = false;
+    added_to_loop_ = false;
     loop_->remvoe_channel(this);
 }

@@ -55,7 +55,6 @@ public:
     void send(Buffer &message);
     void shutdown();
     void force_close();
-    void force_close_with_delay(double second);
 
     void start_read();
     void stop_read();
