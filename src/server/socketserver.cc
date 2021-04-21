@@ -37,6 +37,29 @@ void SocketServer::listen()
     }
 }
 
+void SocketServer::shutdown_write()
+{
+    // 半关闭
+    if (::shutdown(sockfd_, SHUT_WR) < 0)
+    {
+        LOG_ERROR("sockets can not shutdown_write");
+    }
+}
+
+int SocketServer::get_socket_error()
+{
+    int opt;
+    socklen_t len = static_cast<socklen_t>(sizeof opt);
+    if (::getsockopt(sockfd_, SOL_SOCKET, SO_ERROR, &opt, &len))
+    {
+        return errno;
+    }
+    else
+    {
+        return opt;
+    }
+}
+
 int SocketServer::accept(InetAddress &peeraddr)
 {
     sockaddr_in client;
@@ -114,4 +137,15 @@ void SocketServer::set_keep_alive(bool on)
 {
     int opt = on ? 1 : 0;
     ::setsockopt(sockfd_, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof opt));
+}
+
+void SocketServer::set_linger_close(bool on)
+{
+    linger opt = {0};
+    if (on)
+    {
+        opt.l_onoff = 1;
+        opt.l_linger = 1;
+    }
+    ::setsockopt(sockfd_, SOL_SOCKET, SO_LINGER, &opt, static_cast<socklen_t>(sizeof opt));
 }

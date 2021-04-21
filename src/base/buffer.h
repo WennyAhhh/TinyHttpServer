@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <sys/uio.h>
+#include <unistd.h>
 
 class Buffer
 {
@@ -33,26 +34,14 @@ public:
         swap(reader_index_, rhs.reader_index_);
         swap(writer_index_, rhs.writer_index_);
     }
-    ssize_t readFd(int fd, int *saveErrno);
-    // 返回可读区域
-    size_t read_able_bytes() const
-    {
-        return writer_index_ - reader_index_;
-    }
-    // 返回可写区域
-    size_t write_able_bytes() const
-    {
-        return buffer_.size() - writer_index_;
-    }
-    // 返回预留区域
-    size_t prepend_able_bytes() const
-    {
-        return reader_index_;
-    }
-    const char *peek() const
-    {
-        return begin_() + reader_index_;
-    }
+    ssize_t read_fd(int fd, int *save_rrrno);
+    ssize_t write_fd(int fd, int *save_errno);
+
+    size_t read_able_bytes() const { return writer_index_ - reader_index_; }
+    size_t write_able_bytes() const { return buffer_.size() - writer_index_; }
+    size_t prepend_able_bytes() const { return reader_index_; }
+
+    const char *peek() const { return begin_() + reader_index_; }
     void retrieve(size_t len)
     {
         assert(len <= read_able_bytes());
@@ -78,10 +67,7 @@ public:
         // 如果相等的话， 不会读取
         retrieve(end - peek());
     }
-    std::string retrieve_all_string()
-    {
-        return retrieve_string(read_able_bytes());
-    }
+    std::string retrieve_all_string() { return retrieve_string(read_able_bytes()); }
     std::string retrieve_string(size_t len)
     {
         assert(len <= read_able_bytes());
@@ -90,30 +76,19 @@ public:
         return res;
     }
 
-    const char *begin_write() const
-    {
-        return begin_() + writer_index_;
-    }
+    const char *begin_write() const { return begin_() + writer_index_; }
 
-    char *begin_write() noexcept
-    {
-        return begin_() + writer_index_;
-    }
+    char *begin_write() noexcept { return begin_() + writer_index_; }
 
+    void append(const std::string_view data) { append(data.data(), data.size()); }
+    void append(const void *data, size_t len) { append(static_cast<const char *>(data), len); }
     void append(const char *data, size_t len)
     {
         ensure(len);
         std::copy(data, data + len, begin_write());
         has_written(len);
     }
-    void append(const std::string_view data)
-    {
-        append(data.data(), data.size());
-    }
-    void append(const void *data, size_t len)
-    {
-        append(static_cast<const char *>(data), len);
-    }
+
     void prepend(const std::string_view data, size_t len)
     {
         // 可以后挪

@@ -96,11 +96,8 @@ void TcpConnection::send(Buffer &buff)
 
 void TcpConnection::shutdown()
 {
-    if (status_ == Status::CONNECTED)
-    {
-        set_status_(Status::DISCONNECTING);
-        loop_->run_in_loop(std::bind(&TcpConnection::shutdown_in_loop_, this));
-    }
+    // muduo中为什么要在竞态环境中做比较？
+    loop_->run_in_loop(std::bind(&TcpConnection::shutdown_in_loop_, this));
 }
 
 void TcpConnection::force_close()
@@ -145,6 +142,78 @@ void TcpConnection::destroy_connect()
         connection_cb_(shared_from_this());
     }
     channel_->remove();
+}
+
+void TcpConnection::handle_read_()
+{
+    loop_->assert_in_loop();
+    int save_errno = 0;
+    ssize_t n = input_buffer_->read_fd(channel_->fd(), &save_errno);
+    if (n > 0)
+    {
+        message_cb_(shared_from_this(), input_buffer_);
+    }
+    else if (n == 0)
+    {
+        handle_close_();
+    }
+    else
+    {
+        errno = save_errno;
+        LOG_ERROR("TcpConnection::handleRead");
+        handle_error_();
+    }
+}
+
+void TcpConnection::handle_write_()
+{
+    loop_->assert_in_loop();
+    if (channel_->is_writing())
+    {
+        int save_errno = 0;
+        ssize_t n = output_buffer_->write_fd(channel_->fd(), &save_errno);
+        // 可以在buffer里面写数据
+        if (n > 0)
+        {
+            output_buffer_->retrieve(n);
+            if (output_buffer_->read_able_bytes() == 0)
+            {
+                channel_->disable_writing();
+                if (write_complete_cb_)
+                {
+                    loop_->queue_in_loop(std::bind(write_complete_cb_, shared_from_this()));
+                }
+                if (status_ == Status::DISCONNECTING)
+                {
+                    // 最后一次写数据， 配合优雅关闭
+                    shutdown_in_loop_();
+                }
+            }
+        }
+    }
+    else
+    {
+        LOG_WARN("Connection fd = %d, ip = %s is can not write", channel_->fd(), peer_addr_.to_ip_port().data());
+    }
+}
+
+void TcpConnection::handle_close_()
+{
+    loop_->assert_in_loop();
+    LOG_INFO("fd = %d, satus = %s", channel_->fd(), status_str[status_]);
+    assert(status_ == Status::CONNECTED || status_ == Status::DISCONNECTING);
+    set_status_(Status::DISCONNECTED);
+    channel_->disable_all();
+
+    std::shared_ptr<TcpConnection> gurad_conn(shared_from_this());
+    connection_cb_(gurad_conn);
+    // 自己删除自己
+    close_cb_(gurad_conn);
+}
+
+void TcpConnection::handle_error_()
+{
+    LOG_ERROR("TcpConnection::handleError [ %s ] ERROR = %s", name_.data(), socket_->get_socket_error());
 }
 
 void TcpConnection::send_in_loop_(const void *data, size_t len)
@@ -209,6 +278,15 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
 
 void TcpConnection::shutdown_in_loop_()
 {
+    loop_->assert_in_loop();
+    if (status_ == Status::CONNECTED)
+    {
+        set_status_(Status::CONNECTING);
+        if (!channel_->is_writing())
+        {
+            socket_->shutdown_write();
+        }
+    }
 }
 
 void TcpConnection::force_close_in_loop_()

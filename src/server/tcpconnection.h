@@ -22,7 +22,7 @@ typedef std::function<void(const TcpConnectionPtr &)> ConnectionCallback;
 typedef std::function<void(const TcpConnectionPtr &)> CloseCallback;
 typedef std::function<void(const TcpConnectionPtr &)> WriteCompleteCallback;
 typedef std::function<void(const TcpConnectionPtr &, size_t)> HighWaterMarkCallback;
-typedef std::function<void(const TcpConnectionPtr &, Buffer *)> MessageCallback;
+typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer>)> MessageCallback;
 
 // class Status
 // {

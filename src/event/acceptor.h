@@ -14,7 +14,7 @@ class EventLoop;
 class Acceptor
 {
 public:
-    Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reuseport);
+    Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reuseport, bool linger_close = false);
     ~Acceptor();
 
     void set_conn_callback(const NewConnectionCallBack &cb)

@@ -23,7 +23,7 @@ void Buffer::makespace(size_t len)
     }
 }
 
-ssize_t Buffer::readFd(int fd, int *saveErrno)
+ssize_t Buffer::read_fd(int fd, int *save_errno)
 {
     char extrabuf[65535];
     struct iovec vec[2];
@@ -35,7 +35,7 @@ ssize_t Buffer::readFd(int fd, int *saveErrno)
     const ssize_t len = readv(fd, vec, 2);
     if (len < 0)
     {
-        *saveErrno = errno;
+        *save_errno = errno;
     }
     else if (static_cast<size_t>(len) <= write_size)
     {
@@ -45,6 +45,20 @@ ssize_t Buffer::readFd(int fd, int *saveErrno)
     {
         writer_index_ = buffer_.size();
         append(extrabuf, len - write_size);
+    }
+    return len;
+}
+
+ssize_t Buffer::write_fd(int fd, int *save_errno)
+{
+    const ssize_t len = ::write(fd, peek(), read_able_bytes());
+    if (len < 0)
+    {
+        *save_errno = errno;
+    }
+    else
+    {
+        reader_index_ += len;
     }
     return len;
 }

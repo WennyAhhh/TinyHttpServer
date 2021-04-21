@@ -27,9 +27,12 @@ public:
     void set_reuse_addr(bool);
     void set_reuse_port(bool);
     void set_keep_alive(bool);
+    void set_linger_close(bool);
 
     void bind(const InetAddress &inet_addr);
     void listen();
+    void shutdown_write();
+    int get_socket_error();
     int accept(InetAddress &peeraddr);
     int accept();
 
