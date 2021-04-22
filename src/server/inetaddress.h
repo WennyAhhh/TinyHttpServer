@@ -15,6 +15,7 @@ class InetAddress
 {
 public:
     explicit InetAddress(uint16_t port = 0, bool loopback = false);
+    InetAddress(int scokfd);
     InetAddress(std::string_view ip, uint16_t port = 0);
     InetAddress(sockaddr_in &addr) : addr_(addr) {}
 

@@ -13,15 +13,15 @@ void default_connection_cb(const TcpConnectionPtr &conn)
              conn->is_connected() ? "UP" : "DOWN");
 }
 
-void default_message_cb(const TcpConnection &, std::shared_ptr<Buffer> buf)
+void default_message_cb(const TcpConnectionPtr &, std::shared_ptr<Buffer> buf)
 {
     buf->retrieve_all();
 }
 
-// void default_message_cb(const TcpConnection &, size_t len)
-// {
-//     LOG_INFO("high water mark: %d", len);
-// }
+void default_high_water_mark_cb(const TcpConnectionPtr &, size_t len)
+{
+    LOG_INFO("high water mark: %d", len);
+}
 
 TcpConnection::TcpConnection(EventLoop *loop,
                              const std::string &name_arg,
@@ -46,6 +46,7 @@ TcpConnection::TcpConnection(EventLoop *loop,
     LOG_INFO("TcpConnection[ %s ] at %p fd =  %d", name_.data(), this, sockfd);
     // 心跳机制， 三次握手之后设置
     socket_->set_keep_alive(true);
+    high_water_mark_cb_ = default_high_water_mark_cb;
 }
 
 TcpConnection::~TcpConnection()

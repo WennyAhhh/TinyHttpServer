@@ -49,6 +49,7 @@ public:
     const std::string &get_name() const { return name_; }
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
+    EventLoop *get_loop() const { return loop_; }
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 

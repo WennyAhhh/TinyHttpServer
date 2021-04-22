@@ -50,12 +50,39 @@ void TcpServer::set_thread_num(int num_threads)
 
 void TcpServer::new_connection(int sockfd, const InetAddress &peer_address)
 {
+    loop_->assert_in_loop();
+    EventLoop *loop = thread_pool_->get_loop();
+
+    std::string conn_name = name_ + "-" + ip_port_ + "#" + std::to_string(next_id);
+    next_id++;
+
+    LOG_INFO("TcpServer::new_connection [ %s ] - new connection [ %s ] from %s", name_, conn_name, peer_address.to_ip_port());
+
+    InetAddress local_address(sockfd);
+
+    TcpConnectionPtr conn(std::make_shared<TcpConnection>(loop, conn_name, sockfd, local_address, peer_address));
+
+    conn->set_connection_cb(connection_cb_);
+    conn->set_message_cb(message_cb_);
+    conn->set_close_cb(std::bind(remove_connection, this, conn));
+    conn->set_write_complete_cb(write_complete_cb_);
+
+    loop_->run_in_loop(std::bind(&TcpConnection::build_connect, conn));
 }
 
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
 {
+    // 防止竞态
+    loop_->run_in_loop(std::bind(&remove_connection_in_loop, this, conn));
 }
 
 void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
 {
+    loop_->assert_in_loop();
+
+    size_t n = connection_.erase(conn->get_name());
+    assert(n == 1);
+
+    EventLoop *loop = conn->get_loop();
+    loop->run_in_loop(std::bind(TcpConnection::destroy_connect, conn));
 }
