@@ -28,7 +28,7 @@ EventLoopThread::~EventLoopThread()
 
 EventLoop *EventLoopThread::start_loop()
 {
-    thread_ = std::thread(std::bind(&EventLoopThread::thread_func_, this), name_);
+    thread_ = std::thread(std::bind(&EventLoopThread::thread_func_, this));
 
     EventLoop *loop = nullptr;
     while (loop_.load() == nullptr)

@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(time_test)
-
-SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb ")
-SET(CMAKE_CXX_FLAGS_RELEASE "${ENV{CXXFLAGS} -O3 -Wall")
+project(server_test)
 
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB LIBS_BASE "${LIB_SOURCE}/base/*.cc")
 file(GLOB LIBS_EVENT "${LIB_SOURCE}/event/*.cc")
+file(GLOB LIBS_SERVER "${LIB_SOURCE}/server/*.cc")
 
 # add_library(time_library STATIC
 #     ${LIBS_BASE}
@@ -22,18 +20,20 @@ file(GLOB LIBS_EVENT "${LIB_SOURCE}/event/*.cc")
 set(SOURCES
     ${LIBS_BASE}
     ${LIBS_EVENT}
+    ${LIBS_SERVER}
 )
-add_executable(time_test
-    time_test.cc
+add_executable(server_test
+    # threadpool_test.cc
+    eventloop_test.cc
     ${SOURCES}
 )
 
-target_link_libraries(time_test
+target_link_libraries(server_test
     PUBLIC 
         pthread
 )
 
-target_include_directories(time_test
+target_include_directories(server_test
     PUBLIC 
         ${LIB_SOURCE}
 )

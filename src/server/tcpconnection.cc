@@ -24,7 +24,7 @@ void default_high_water_mark_cb(const TcpConnectionPtr &, size_t len)
 }
 
 TcpConnection::TcpConnection(EventLoop *loop,
-                             const std::string &name_arg,
+                             const std::string name_arg,
                              int sockfd,
                              const InetAddress &local_address,
                              const InetAddress &peer_address)
@@ -36,6 +36,8 @@ TcpConnection::TcpConnection(EventLoop *loop,
       channel_(std::make_unique<Channel>(loop, sockfd)),
       local_addr_(local_address),
       peer_addr_(peer_address),
+      input_buffer_(std::make_unique<Buffer>()),
+      output_buffer_(std::make_unique<Buffer>()),
       high_water_mark_(64 * 1024 * 1024) // 一次最多传输64M
 {
     channel_->set_read_cb(std::bind(&TcpConnection::handle_read_, this));
@@ -74,7 +76,7 @@ void TcpConnection::send(const std::string_view &message)
         }
         else
         {
-            loop_->run_in_loop(std::bind(send_in_loop_, this, message.data(), message.size()));
+            loop_->run_in_loop(std::bind(&TcpConnection::send_in_loop_, this, message.data(), message.size()));
         }
     }
 }
@@ -90,7 +92,7 @@ void TcpConnection::send(Buffer &buff)
         }
         else
         {
-            loop_->run_in_loop(std::bind(send_in_loop_, this, buff.peek(), buff.read_able_bytes()));
+            loop_->run_in_loop(std::bind(&TcpConnection::send_in_loop_, this, buff.peek(), buff.read_able_bytes()));
         }
     }
 }
@@ -282,7 +284,7 @@ void TcpConnection::shutdown_in_loop_()
     loop_->assert_in_loop();
     if (status_ == Status::CONNECTED)
     {
-        set_status_(Status::CONNECTING);
+        set_status_(Status::DISCONNECTING);
         if (!channel_->is_writing())
         {
             socket_->shutdown_write();

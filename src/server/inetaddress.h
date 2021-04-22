@@ -14,10 +14,12 @@ int create_listenfd(sa_family_t family);
 class InetAddress
 {
 public:
+    static sockaddr_in get_sock(int sockfd);
+
     explicit InetAddress(uint16_t port = 0, bool loopback = false);
-    InetAddress(int scokfd);
     InetAddress(std::string_view ip, uint16_t port = 0);
     InetAddress(sockaddr_in &addr) : addr_(addr) {}
+    InetAddress(sockaddr_in &&addr) : addr_(addr) {}
 
     const sockaddr *get_addr() const;
     const sa_family_t get_family() const { return addr_.sin_family; }

@@ -17,7 +17,7 @@ public:
     EventLoopThreadPool(EventLoop *base_loop, const std::string &nameArg);
     ~EventLoopThreadPool();
 
-    void set_thread_num(int num_threads) { num_threads = num_threads; }
+    void set_thread_num(int num_threads) { num_threads_ = num_threads; }
     bool get_started() const { return started_; }
     const std::string &get_name() const { return name_; }
 

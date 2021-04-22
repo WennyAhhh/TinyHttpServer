@@ -7,7 +7,7 @@
 #include <mutex>
 #include <functional>
 
-class EventLoop;
+#include "event/eventloop.h"
 
 class EventLoopThread
 {

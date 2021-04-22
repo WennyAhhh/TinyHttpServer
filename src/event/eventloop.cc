@@ -39,6 +39,8 @@ EventLoop::EventLoop() : poller_(new Epoller(this)),
 EventLoop::~EventLoop()
 {
     assert(!looping_);
+    wake_channel_->disable_all();
+    wake_channel_->remove();
     ::close(wakefd_);
     LoopInThisThread = nullptr;
 }

@@ -1,6 +1,6 @@
 #include "tcpserver.h"
 #include "tcpconnection.h"
-#include "acceptor.h"
+#include "event/acceptor.h"
 #include "event/eventloop.h"
 #include "inetaddress.h"
 #include "eventloopthreadpool.h"
@@ -58,13 +58,15 @@ void TcpServer::new_connection(int sockfd, const InetAddress &peer_address)
 
     LOG_INFO("TcpServer::new_connection [ %s ] - new connection [ %s ] from %s", name_, conn_name, peer_address.to_ip_port());
 
-    InetAddress local_address(sockfd);
+    InetAddress local_address(InetAddress::get_sock(sockfd));
 
     TcpConnectionPtr conn(std::make_shared<TcpConnection>(loop, conn_name, sockfd, local_address, peer_address));
 
+    connection_[conn_name] = conn;
+
     conn->set_connection_cb(connection_cb_);
     conn->set_message_cb(message_cb_);
-    conn->set_close_cb(std::bind(remove_connection, this, conn));
+    conn->set_close_cb(std::bind(&TcpServer::remove_connection, this, conn));
     conn->set_write_complete_cb(write_complete_cb_);
 
     loop_->run_in_loop(std::bind(&TcpConnection::build_connect, conn));
@@ -73,7 +75,7 @@ void TcpServer::new_connection(int sockfd, const InetAddress &peer_address)
 void TcpServer::remove_connection(const TcpConnectionPtr &conn)
 {
     // 防止竞态
-    loop_->run_in_loop(std::bind(&remove_connection_in_loop, this, conn));
+    loop_->run_in_loop(std::bind(&TcpServer::remove_connection_in_loop, this, conn));
 }
 
 void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
@@ -84,5 +86,5 @@ void TcpServer::remove_connection_in_loop(const TcpConnectionPtr &conn)
     assert(n == 1);
 
     EventLoop *loop = conn->get_loop();
-    loop->run_in_loop(std::bind(TcpConnection::destroy_connect, conn));
+    loop->run_in_loop(std::bind(&TcpConnection::destroy_connect, conn));
 }

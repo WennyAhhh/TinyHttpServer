@@ -16,7 +16,7 @@ class Buffer
 public:
     // 内联常量
     static constexpr size_t cheap_prepend = 8;
-    static constexpr size_t initial_size_default = 5;
+    static constexpr size_t initial_size_default = 1024;
     explicit Buffer(size_t initial_size = initial_size_default)
         : buffer_(cheap_prepend + initial_size), // buffer长度
           reader_index_(cheap_prepend),

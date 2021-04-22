@@ -22,7 +22,7 @@ typedef std::function<void(const TcpConnectionPtr &)> ConnectionCallback;
 typedef std::function<void(const TcpConnectionPtr &)> CloseCallback;
 typedef std::function<void(const TcpConnectionPtr &)> WriteCompleteCallback;
 typedef std::function<void(const TcpConnectionPtr &, size_t)> HighWaterMarkCallback;
-typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer>)> MessageCallback;
+typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer> &)> MessageCallback;
 
 // class Status
 // {
@@ -39,7 +39,7 @@ class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
 public:
     TcpConnection(EventLoop *loop,
-                  const std::string &name,
+                  const std::string name,
                   int sockfd,
                   const InetAddress &local_address,
                   const InetAddress &peer_address);
@@ -49,7 +49,6 @@ public:
     const std::string &get_name() const { return name_; }
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
-    EventLoop *get_loop() const { return loop_; }
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 
@@ -105,7 +104,7 @@ private:
     void stop_read_in_loop_();
     void force_close_in_loop_();
 
-    void set_status_(Status s);
+    void set_status_(Status s) { status_ = s; }
 
     EventLoop *loop_;
     const std::string name_;

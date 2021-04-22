@@ -5,7 +5,7 @@
 #include "acceptor.h"
 #include "event/eventloop.h"
 
-Acceptor::Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reuseport, bool linger_close = false)
+Acceptor::Acceptor(EventLoop *loop, const InetAddress &listen_addr, bool reuseport, bool linger_close)
     : loop_(loop),
       accept_socket_(std::make_unique<SocketServer>(create_listenfd(listen_addr.get_family()))),
       accept_channel_(std::make_unique<Channel>(loop, accept_socket_->fd())),

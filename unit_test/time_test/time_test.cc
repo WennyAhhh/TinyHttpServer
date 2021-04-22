@@ -46,7 +46,6 @@ void func()
 
 int main()
 {
-    sleep(1);
     std::cout << "xx" << std::endl;
     Log::instance()->init("./.log", true, true);
     EventLoop loop;

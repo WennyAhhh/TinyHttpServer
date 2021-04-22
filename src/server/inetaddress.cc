@@ -20,16 +20,18 @@ InetAddress::InetAddress(std::string_view ip, uint16_t port)
     }
 }
 
-InetAddress::InetAddress(int sockfd)
+sockaddr_in InetAddress::get_sock(int sockfd)
 {
-    memset(&addr_, 0, sizeof addr_);
-    socklen_t len = static_cast<socklen_t>(sizeof addr_);
+    sockaddr_in addr;
+    memset(&addr, 0, sizeof addr);
+    socklen_t len = static_cast<socklen_t>(sizeof addr);
     // 获取本地协议地址
-    if (::getsockname(sockfd, reinterpret_cast<sockaddr *>(&addr_), &len) < 0)
+    if (::getsockname(sockfd, reinterpret_cast<sockaddr *>(&addr), &len) < 0)
     {
         LOG_ERROR("InetAddress::InetAddress can not get scokfd");
-        memset(&addr_, 0, sizeof addr_);
+        // memset(&addr, 0, sizeof addr);
     }
+    return addr;
 }
 
 const std::string InetAddress::to_ip_port() const

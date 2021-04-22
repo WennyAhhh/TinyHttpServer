@@ -28,6 +28,10 @@ public:
     void set_thread_num(int num_threads);
     void set_thread_init_cb_(const ThreadInitCallback &cb) { thread_init_cb_ = cb; }
 
+    void set_connection_cb(const ConnectionCallback &cb) { connection_cb_ = cb; }
+    void set_message_cb(const MessageCallback &cb) { message_cb_ = cb; }
+    void set_write_complete_cb(const WriteCompleteCallback &cb) { write_complete_cb_ = cb; }
+
 private:
     void new_connection(int sockfd, const InetAddress &peer_address);
 
