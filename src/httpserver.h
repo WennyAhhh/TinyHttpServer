@@ -6,6 +6,9 @@
 #include "server/tcpserver.h"
 #include "server/entry.h"
 #include "event/eventloop.h"
+#include "http/httpcontext.h"
+#include "http/httpresponse.h"
+
 #include <boost/circular_buffer.hpp>
 #include <vector>
 
@@ -27,7 +30,6 @@ public:
     {
         //   connection_list_
         connection_list_.resize(30);
-        printf("%d", connection_list_.size());
         tcpserver_->set_message_cb(std::bind(&HttpServer::message_cb, this, std::placeholders::_1, std::placeholders::_2));
         tcpserver_->set_connection_cb(std::bind(&HttpServer::connection_cb, this, std::placeholders::_1));
         tcpserver_->set_thread_init_cb_(std::bind(&HttpServer::init_cb, this, std::placeholders::_1));
@@ -49,6 +51,12 @@ public:
     void message_cb(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &buff);
 
     void init_cb(EventLoop *loop);
+
+    void process(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &readBuff);
+
+    void set_dir(char *dir) { srcDir = dir; }
+
+    static const char *srcDir;
 
 private:
     std::unique_ptr<TcpServer> tcpserver_;

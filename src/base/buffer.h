@@ -76,7 +76,7 @@ public:
         return res;
     }
 
-    const char *begin_write() const { return begin_() + writer_index_; }
+    const char *begin_write_const() const { return begin_() + writer_index_; }
 
     char *begin_write() noexcept { return begin_() + writer_index_; }
 

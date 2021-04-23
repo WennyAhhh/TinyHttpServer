@@ -50,6 +50,7 @@ public:
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
     const std::any &get_context() const { return context_; }
+    std::any* get_context_ptr() {return &context_;}
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 

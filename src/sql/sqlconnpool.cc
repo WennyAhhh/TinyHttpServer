@@ -1,26 +1,31 @@
 #include "sqlconnpool.h"
 
-SqlConnPool::SqlConnPool(){
+SqlConnPool::SqlConnPool()
+{
     use_count_ = 0;
     free_count_ = 0;
 }
 
-void SqlConnPool::init(const char* host, int port,
-    const char* user, const char* pwd, const char* db_name,
-    int conn_size){
+void SqlConnPool::init(const char *host, int port,
+                       const char *user, const char *pwd, const char *db_name,
+                       int conn_size)
+{
 
     assert(conn_size > 0);
-    for(int i = 0; i < conn_size; i++){
+    for (int i = 0; i < conn_size; i++)
+    {
         MYSQL *sql = nullptr;
         sql = mysql_init(sql);
-        if(!sql) {
+        if (!sql)
+        {
             // LOG
             assert(sql);
         }
-        sql = mysql_real_connect(sql, host, 
+        sql = mysql_real_connect(sql, host,
                                  user, pwd, db_name,
                                  port, nullptr, 0);
-        if(!sql){
+        if (!sql)
+        {
             // LOG
         }
         conn_que_.push(sql);
@@ -30,9 +35,11 @@ void SqlConnPool::init(const char* host, int port,
     sem_init(&sem_id_, 0, MAX_CONN_);
 }
 
- MYSQL* SqlConnPool::GetConn(){
-    MYSQL* sql = nullptr;
-    if(conn_que_.empty()){
+MYSQL *SqlConnPool::GetConn()
+{
+    MYSQL *sql = nullptr;
+    if (conn_que_.empty())
+    {
         // LOG
         return nullptr;
     }
@@ -45,16 +52,19 @@ void SqlConnPool::init(const char* host, int port,
     return sql;
 }
 
-void SqlConnPool::FreeConn(MYSQL* sql){
+void SqlConnPool::FreeConn(MYSQL *sql)
+{
     assert(sql);
     std::lock_guard<std::mutex> locker(mtx_);
     conn_que_.push(sql);
     sem_post(&sem_id_);
 }
 
-void SqlConnPool::ClosePool() {
+void SqlConnPool::ClosePool()
+{
     std::lock_guard<std::mutex> lk(mtx_);
-    while(!conn_que_.empty()){
+    while (!conn_que_.empty())
+    {
         auto sql = conn_que_.front();
         conn_que_.pop();
         mysql_close(sql);
@@ -62,11 +72,18 @@ void SqlConnPool::ClosePool() {
     mysql_library_end();
 }
 
-int SqlConnPool::GetFreeConnCount(){
+int SqlConnPool::GetFreeConnCount()
+{
     std::lock_guard<std::mutex> lk(mtx_);
     return conn_que_.size();
 }
 
-SqlConnPool::~SqlConnPool(){
+SqlConnPool::~SqlConnPool()
+{
     ClosePool();
+}
+SqlConnPool *SqlConnPool::Instance()
+{
+    static SqlConnPool connPool;
+    return &connPool;
 }

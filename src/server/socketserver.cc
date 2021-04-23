@@ -11,7 +11,7 @@ int setnonblocking(int fd)
 int create_listenfd(sa_family_t family)
 {
     int listenfd_ = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
-    if (listenfd_)
+    if (listenfd_ < 0)
     {
         LOG_ERROR("Acceptor listenfd");
     }
