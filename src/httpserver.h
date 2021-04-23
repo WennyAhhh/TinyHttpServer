@@ -54,13 +54,18 @@ public:
 
     void process(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &readBuff);
 
-    void set_dir(char *dir) { srcDir = dir; }
+    void set_dir(char *dir)
+    {
+        std::string pwd = std::string(::getcwd(nullptr, 256));
+        src_dir_ = pwd + std::string(dir);
+    }
 
-    static const char *srcDir;
+    void set_thread_num(int thread_num) { tcpserver_->set_thread_num(thread_num); }
 
 private:
     std::unique_ptr<TcpServer> tcpserver_;
     EventLoop *loop_;
+    std::string src_dir_;
     WeakConnectionList connection_list_;
 };
 

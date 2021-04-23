@@ -1,14 +1,12 @@
 #include "httpserver.h"
 
-const char *HttpServer::srcDir;
-
 void HttpServer::message_cb(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &buff)
 {
     extend_time(conn);
     printf("onMessage(): received %zd bytes from connection [%s]\n",
            buff->read_able_bytes(),
            conn->get_name().c_str());
-
+    process(conn, buff);
     // printf("onMessage(): [%s]\n", buf->retrieve_all_string().c_str());
     // conn->send(buff->retrieve_all_string());
 }
@@ -30,11 +28,11 @@ void HttpServer::process(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &
     else if (context->parse(readBuff))
     {
         LOG_DEBUG("%s", context->path().c_str());
-        response.Init(srcDir, context->path(), context->IsKeepAlive(), 200);
+        response.Init(src_dir_, context->path(), context->IsKeepAlive(), 200);
     }
     else
     {
-        response.Init(srcDir, context->path(), false, 400);
+        response.Init(src_dir_, context->path(), false, 400);
     }
     Buffer writeBuff;
     response.MakeResponse(writeBuff);
