@@ -20,7 +20,7 @@ void default_message_cb(const TcpConnectionPtr &, std::shared_ptr<Buffer> buf)
 
 void default_high_water_mark_cb(const TcpConnectionPtr &, size_t len)
 {
-    LOG_INFO("high water mark: %d", len);
+    LOG_INFO("high water mark: %zu", len);
 }
 
 TcpConnection::TcpConnection(EventLoop *loop,
@@ -54,9 +54,10 @@ TcpConnection::TcpConnection(EventLoop *loop,
 TcpConnection::~TcpConnection()
 {
     LOG_DEBUG("TcpConnection::~TcpConnection[ %s ] at %p fd = %d status = %s",
-              name_,
+              name_.data(),
+              this,
               channel_->fd(),
-              status_str[status_]);
+              status_str[status_].data());
     assert(status_ == Status::DISCONNECTED);
 }
 
@@ -203,7 +204,7 @@ void TcpConnection::handle_write_()
 void TcpConnection::handle_close_()
 {
     loop_->assert_in_loop();
-    LOG_INFO("fd = %d, satus = %s", channel_->fd(), status_str[status_]);
+    LOG_INFO("fd = %d, satus = %s", channel_->fd(), status_str[status_].data());
     assert(status_ == Status::CONNECTED || status_ == Status::DISCONNECTING);
     set_status_(Status::DISCONNECTED);
     channel_->disable_all();
@@ -216,7 +217,7 @@ void TcpConnection::handle_close_()
 
 void TcpConnection::handle_error_()
 {
-    LOG_ERROR("TcpConnection::handleError [ %s ] ERROR = %s", name_.data(), socket_->get_socket_error());
+    LOG_ERROR("TcpConnection::handleError [ %s ] ERROR = %d", name_.data(), socket_->get_socket_error());
 }
 
 void TcpConnection::send_in_loop_(const void *data, size_t len)

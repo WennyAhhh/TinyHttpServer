@@ -22,7 +22,10 @@ void Epoller::poll(int timeoutMs, ChannelList *active_channels)
     int saved_errno = errno;
     if (cnt > 0)
     {
-        LOG_INFO("%d events happend", cnt);
+        if (cnt >= 5)
+        {
+            LOG_INFO("%d events happend", cnt);
+        }
         fill_active_channels(cnt, active_channels);
         if (cnt == events_.size())
         {
@@ -123,7 +126,7 @@ void Epoller::remove_channel(Channel *channel)
 {
     PollBase::assert_in_loop_thread();
     int fd = channel->fd();
-    LOG_INFO("%d = ", fd);
+    LOG_INFO(" fd = %d", fd);
     int index = channel->status();
     assert(index == static_cast<int>(POLL_TAG::ADD) || index == static_cast<int>(POLL_TAG::DEL));
     channels_.erase(fd);

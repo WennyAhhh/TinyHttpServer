@@ -29,10 +29,10 @@ void read_timer_fd(int timerfd, TimerNode now)
 {
     uint64_t t;
     ssize_t n = ::read(timerfd, &t, sizeof t);
-    LOG_DEBUG("TImerQueue::handle_read() %llu ", t);
+    LOG_DEBUG("TImerQueue::handle_read() %zd ", t);
     if (n != sizeof t)
     {
-        LOG_ERROR("TImerQueue::handle_read() reads %u", n);
+        LOG_ERROR("TimerQueue::handle_read() reads %zd", n);
     }
 }
 

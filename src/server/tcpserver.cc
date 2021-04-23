@@ -56,7 +56,7 @@ void TcpServer::new_connection(int sockfd, const InetAddress &peer_address)
     std::string conn_name = name_ + "-" + ip_port_ + "#" + std::to_string(next_id);
     next_id++;
 
-    LOG_INFO("TcpServer::new_connection [ %s ] - new connection [ %s ] from %s", name_, conn_name, peer_address.to_ip_port());
+    LOG_INFO("TcpServer::new_connection [ %s ] - new connection [ %s ] from %s", name_.data(), conn_name.data(), peer_address.to_ip_port().data());
 
     InetAddress local_address(InetAddress::get_sock(sockfd));
 

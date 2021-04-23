@@ -63,9 +63,16 @@ public:
         append(mess.data(), mess.size());
     }
 
+    void loading()
+    {
+        std::unique_lock<std::mutex> lk(mtx_);
+        refresh_("", 0);
+    }
+
 private:
     Log();
     void thread_func();
+    void refresh_(const char *logline, int len);
     std::string timerstamp() noexcept
     {
         char str[9];
@@ -101,12 +108,14 @@ private:
     bool date_stamp_{true};
 };
 
-#define LOG(level, fmt, ...)                                                                                                                \
-    do                                                                                                                                      \
-    {                                                                                                                                       \
-        char _buf[1024] = {0};                                                                                                              \
-        snprintf(_buf, sizeof(_buf), "[%s:%s:%d][%s]" fmt "\n", __FILE__, __FUNCTION__, __LINE__, Log::LEVEL[level].data(), ##__VA_ARGS__); \
-        Log::instance()->write(std::string(_buf));                                                                                          \
+#define LOG(level, fmt, ...)                                                                                \
+    do                                                                                                      \
+    {                                                                                                       \
+        char buf_[1024] = {0};                                                                              \
+        char res_[250];                                                                                     \
+        snprintf(res_, sizeof(res_), "[%s:%s:%d]", __FILE__, __FUNCTION__, __LINE__);                       \
+        snprintf(buf_, sizeof(buf_), "%100s[%5s]" fmt "\n", res_, Log::LEVEL[level].data(), ##__VA_ARGS__); \
+        Log::instance()->write(std::string(buf_));                                                          \
     } while (0);
 
 #define LOG_DEBUG(fmt, ...)        \

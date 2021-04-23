@@ -63,17 +63,7 @@ void Log::append(const char *logline, int len)
     }
     else
     {
-        buffer_.push_back(std::move(curr_buffer_));
-        if (next_buffer_)
-        {
-            curr_buffer_ = std::move(next_buffer_);
-        }
-        else
-        {
-            curr_buffer_.reset(new Buffer);
-        }
-        curr_buffer_->append(logline, len);
-        cond_.notify_one();
+        refresh_(logline, len);
     }
 }
 
@@ -130,4 +120,22 @@ void Log::thread_func()
         fflush(fp_);
     }
     fflush(fp_);
+}
+
+void Log::refresh_(const char *logline, int len)
+{
+    buffer_.push_back(std::move(curr_buffer_));
+    if (next_buffer_)
+    {
+        curr_buffer_ = std::move(next_buffer_);
+    }
+    else
+    {
+        curr_buffer_.reset(new Buffer);
+    }
+    if (len > 0)
+    {
+        curr_buffer_->append(logline, len);
+    }
+    cond_.notify_one();
 }

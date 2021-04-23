@@ -49,6 +49,7 @@ public:
     const std::string &get_name() const { return name_; }
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
+    const std::any &get_context() const { return context_; }
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 
@@ -62,6 +63,7 @@ public:
     void stop_read();
     bool is_reading() const { return reading_; }
 
+    void set_context(const std::any &context) { context_ = context; }
     void set_connection_cb(const ConnectionCallback &cb) { connection_cb_ = cb; }
     void set_message_cb(const MessageCallback &cb) { message_cb_ = cb; }
     void set_write_complete_cb(const WriteCompleteCallback &cb) { write_complete_cb_ = cb; }
