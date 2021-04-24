@@ -8,6 +8,8 @@
 #include <cassert>
 #include <sys/poll.h>
 #include <sys/eventfd.h>
+#include <signal.h>
+#include "epoller.h"
 #include "base/log.h"
 #include "base/timerqueue.h"
 
@@ -15,6 +17,18 @@ class Channel;
 class PollBase;
 
 typedef std::function<void()> Functor;
+
+class IgnoreSigPipe
+{
+public:
+    IgnoreSigPipe()
+    {
+        printf("ignore\n");
+        LOG_INFO("Ignore SIGPIPE");
+        ::signal(SIGPIPE, SIG_IGN);
+        LOG_INFO("Ignore SIGPIPE");
+    }
+};
 
 class EventLoop
 {

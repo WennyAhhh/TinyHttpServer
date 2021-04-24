@@ -22,7 +22,7 @@ typedef std::function<void(const TcpConnectionPtr &)> ConnectionCallback;
 typedef std::function<void(const TcpConnectionPtr &)> CloseCallback;
 typedef std::function<void(const TcpConnectionPtr &)> WriteCompleteCallback;
 typedef std::function<void(const TcpConnectionPtr &, size_t)> HighWaterMarkCallback;
-typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer> &)> MessageCallback;
+typedef std::function<void(const TcpConnectionPtr &, Buffer *)> MessageCallback;
 
 // class Status
 // {
@@ -33,7 +33,7 @@ typedef std::function<void(const TcpConnectionPtr &, std::shared_ptr<Buffer> &)>
 //     static const int DISCONNECTING = 3;
 // };
 void default_connection_cb(const TcpConnectionPtr &conn);
-void default_message_cb(const TcpConnectionPtr &, std::shared_ptr<Buffer> buf);
+void default_message_cb(const TcpConnectionPtr &, Buffer *buf);
 
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
@@ -50,13 +50,16 @@ public:
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
     const std::any &get_context() const { return context_; }
-    std::any* get_context_ptr() {return &context_;}
+    std::any *get_context_ptr() { return &context_; }
+    const std::any &get_entry() const { return entry_; }
+    std::any *get_entry() { return &entry_; }
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 
     void send(const void *message, int len);
     void send(const std::string_view &message);
     void send(Buffer &message);
+    void send(std::shared_ptr<Buffer> message);
     void shutdown();
     void force_close();
 
@@ -64,6 +67,7 @@ public:
     void stop_read();
     bool is_reading() const { return reading_; }
 
+    void set_entry(const std::any &entry) { entry_ = entry; }
     void set_context(const std::any &context) { context_ = context; }
     void set_connection_cb(const ConnectionCallback &cb) { connection_cb_ = cb; }
     void set_message_cb(const MessageCallback &cb) { message_cb_ = cb; }
@@ -75,8 +79,8 @@ public:
         high_water_mark_ = high_water_mark;
     }
 
-    std::shared_ptr<Buffer> input_buffer() { return input_buffer_; }
-    std::shared_ptr<Buffer> output_buffer() { return output_buffer_; }
+    Buffer *input_buffer() { return &input_buffer_; }
+    Buffer *output_buffer() { return &output_buffer_; }
 
     void build_connect();
     void destroy_connect();
@@ -126,9 +130,10 @@ private:
     CloseCallback close_cb_;
 
     size_t high_water_mark_;
-    std::shared_ptr<Buffer> input_buffer_;
-    std::shared_ptr<Buffer> output_buffer_;
+    Buffer input_buffer_;
+    Buffer output_buffer_;
     std::any context_;
+    std::any entry_;
 };
 
 #endif

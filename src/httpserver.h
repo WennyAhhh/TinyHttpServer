@@ -23,13 +23,13 @@ public:
     HttpServer(EventLoop *loop,
                const InetAddress &listen_address,
                const std::string &name_arg,
-               bool option = false)
+               bool option = true)
         : loop_(loop),
           tcpserver_(std::make_unique<TcpServer>(loop, listen_address, name_arg, option)),
-          connection_list_(30)
+          connection_list_(90)
     {
         //   connection_list_
-        connection_list_.resize(30);
+        connection_list_.resize(90);
         tcpserver_->set_message_cb(std::bind(&HttpServer::message_cb, this, std::placeholders::_1, std::placeholders::_2));
         tcpserver_->set_connection_cb(std::bind(&HttpServer::connection_cb, this, std::placeholders::_1));
         tcpserver_->set_thread_init_cb_(std::bind(&HttpServer::init_cb, this, std::placeholders::_1));
@@ -48,11 +48,11 @@ public:
 
     void connection_cb(const TcpConnectionPtr &conn);
 
-    void message_cb(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &buff);
+    void message_cb(const TcpConnectionPtr &conn, Buffer *buff);
 
     void init_cb(EventLoop *loop);
 
-    void process(const TcpConnectionPtr &conn, std::shared_ptr<Buffer> &readBuff);
+    void process(const TcpConnectionPtr &conn, Buffer *readBuff);
 
     void set_dir(char *dir)
     {

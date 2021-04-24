@@ -18,10 +18,10 @@ public:
     Channel(EventLoop *loop, int fd);
     ~Channel();
     void handle_event();
-    void set_read_cb(const EventCallBack &cb) { read_call_back_ = cb; }
-    void set_write_cb(const EventCallBack &cb) { write_call_back_ = cb; }
-    void set_close_cb(const EventCallBack &cb) { close_call_back_ = cb; }
-    void set_error_cb(const EventCallBack &cb) { error_call_back_ = cb; }
+    void set_read_cb(const EventCallBack cb) { read_call_back_ = std::move(cb); }
+    void set_write_cb(const EventCallBack cb) { write_call_back_ = std::move(cb); }
+    void set_close_cb(const EventCallBack cb) { close_call_back_ = std::move(cb); }
+    void set_error_cb(const EventCallBack cb) { error_call_back_ = std::move(cb); }
 
     int fd() const { return fd_; }
     int events() const { return events_; }

@@ -17,7 +17,7 @@ public:
     TcpServer(EventLoop *loop,
               const InetAddress &listen_address,
               const std::string &name_arg,
-              bool option = false);
+              bool option = true);
     ~TcpServer();
 
     const std::string &get_ip_port() const { return ip_port_; }

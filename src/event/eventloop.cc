@@ -3,7 +3,11 @@
 #include "channel.h"
 #include "epoller.h"
 
+#include <signal.h>
+
 thread_local EventLoop *LoopInThisThread = nullptr;
+
+IgnoreSigPipe ignorrpipe;
 
 int createEventfd()
 {
@@ -159,8 +163,8 @@ void EventLoop::queue_in_loop(Functor cb)
 
 void EventLoop::wakeup_()
 {
-    ssize_t wake_data = 1;
-    if (::write(wakefd_, &wake_data, sizeof wake_data) != 1)
+    uint64_t wake_data = 1;
+    if (::write(wakefd_, &wake_data, sizeof wake_data) != sizeof(wake_data))
     {
         LOG_ERROR("EventLoop::wakeup() ");
     }
@@ -168,8 +172,8 @@ void EventLoop::wakeup_()
 
 void EventLoop::handle_read_()
 {
-    ssize_t wake_data = 1;
-    if (::read(wakefd_, &wake_data, sizeof wake_data) != 1)
+    uint64_t wake_data = 1;
+    if (::read(wakefd_, &wake_data, sizeof wake_data) != sizeof(wake_data))
     {
         LOG_ERROR("EventLoop::read()");
     }

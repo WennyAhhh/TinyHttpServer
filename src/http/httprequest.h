@@ -1,6 +1,6 @@
 #pragma once
-#ifndef HTTPCONTEXT_H
-#define HTTPCONTEXT_H
+#ifndef HTTPREQUEST_H
+#define HTTPREQUEST_H
 
 #include <unordered_map>
 #include <unordered_set>
@@ -11,7 +11,6 @@
 
 #include "base/buffer.h"
 #include "base/log.h"
-#include "httpresponse.h"
 #include "sql/sqlconnpool.h"
 #include "sql/sqlconnRAII.h"
 

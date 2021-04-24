@@ -13,7 +13,7 @@ void default_connection_cb(const TcpConnectionPtr &conn)
              conn->is_connected() ? "UP" : "DOWN");
 }
 
-void default_message_cb(const TcpConnectionPtr &, std::shared_ptr<Buffer> buf)
+void default_message_cb(const TcpConnectionPtr &, Buffer *buf)
 {
     buf->retrieve_all();
 }
@@ -36,8 +36,6 @@ TcpConnection::TcpConnection(EventLoop *loop,
       channel_(std::make_unique<Channel>(loop, sockfd)),
       local_addr_(local_address),
       peer_addr_(peer_address),
-      input_buffer_(std::make_unique<Buffer>()),
-      output_buffer_(std::make_unique<Buffer>()),
       high_water_mark_(64 * 1024 * 1024) // 一次最多传输64M
 {
     channel_->set_read_cb(std::bind(&TcpConnection::handle_read_, this));
@@ -98,6 +96,22 @@ void TcpConnection::send(Buffer &buff)
     }
 }
 
+void TcpConnection::send(std::shared_ptr<Buffer> buff)
+{
+    if (status_ == Status::CONNECTED)
+    {
+        if (loop_->is_in_loop_thread())
+        {
+            send_in_loop_(buff->peek(), buff->read_able_bytes());
+            buff->retrieve_all();
+        }
+        else
+        {
+            loop_->run_in_loop(std::bind(&TcpConnection::send_in_loop_, this, buff->peek(), buff->read_able_bytes()));
+        }
+    }
+}
+
 void TcpConnection::shutdown()
 {
     // muduo中为什么要在竞态环境中做比较？
@@ -152,10 +166,10 @@ void TcpConnection::handle_read_()
 {
     loop_->assert_in_loop();
     int save_errno = 0;
-    ssize_t n = input_buffer_->read_fd(channel_->fd(), &save_errno);
+    ssize_t n = input_buffer_.read_fd(channel_->fd(), &save_errno);
     if (n > 0)
     {
-        message_cb_(shared_from_this(), input_buffer_);
+        message_cb_(shared_from_this(), &input_buffer_);
     }
     else if (n == 0)
     {
@@ -175,12 +189,12 @@ void TcpConnection::handle_write_()
     if (channel_->is_writing())
     {
         int save_errno = 0;
-        ssize_t n = output_buffer_->write_fd(channel_->fd(), &save_errno);
+        ssize_t n = output_buffer_.write_fd(channel_->fd(), &save_errno);
         // 可以在buffer里面写数据
         if (n > 0)
         {
-            output_buffer_->retrieve(n);
-            if (output_buffer_->read_able_bytes() == 0)
+            output_buffer_.retrieve(n);
+            if (output_buffer_.read_able_bytes() == 0)
             {
                 channel_->disable_writing();
                 if (write_complete_cb_)
@@ -232,9 +246,11 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
         return;
     }
 
-    if (!channel_->is_writing() && output_buffer_->read_able_bytes() == 0)
+    if (!channel_->is_writing() && output_buffer_.read_able_bytes() == 0)
     {
-        nwrote = ::send(socket_->fd(), data, len, 0);
+        nwrote = ::send(channel_->fd(), data, len, 0);
+        LOG_DEBUG("reading %zu, nwrote %zu", len, nwrote);
+        // nwrote = ::write(channel_->fd(), data, len);
         if (nwrote >= 0)
         {
             remaining = len - nwrote;
@@ -247,7 +263,7 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
         {
             nwrote = 0;
             // 非阻塞操作， 针对不同系统
-            if (errno != EWOULDBLOCK && errno != EAGAIN)
+            if (errno != EWOULDBLOCK)
             {
                 LOG_WARN("TcpConnection::send_in_loop");
                 if (errno == EPIPE || errno == ECONNRESET)
@@ -263,7 +279,7 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
     // 如果超过高水位
     if (!fault_error && remaining > 0)
     {
-        size_t old_len = output_buffer_->read_able_bytes();
+        size_t old_len = output_buffer_.read_able_bytes();
         if (old_len >= high_water_mark_)
         {
             LOG_WARN("TcpConnection output_buffer_ is already full, Please check whether the network is clear")
@@ -272,7 +288,7 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
         {
             loop_->queue_in_loop(std::bind(high_water_mark_cb_, shared_from_this(), old_len + remaining));
         }
-        output_buffer_->append(static_cast<const char *>(data) + nwrote, remaining);
+        output_buffer_.append(static_cast<const char *>(data) + nwrote, remaining);
         if (!channel_->is_writing())
         {
             channel_->enable_writing();
