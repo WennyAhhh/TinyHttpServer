@@ -39,9 +39,16 @@ void Channel::handle_event_guard_()
     event_handing_ = true;
     // 分发事件
     // 文件描述符没有打开
+    if ((revents_ & POLLHUP) && !(revents_ & POLLIN))
+    {
+        if (close_call_back_)
+        {
+            close_call_back_();
+        }
+    }
     if (revents_ & POLLNVAL)
     {
-        LOG_WARN("Channel::handle_event() POLLNVAL");
+        LOG_WARN("fd = %d Channel::handle_event() POLLNVAL", fd());
     }
     if (revents_ & (POLLERR | POLLNVAL))
     {
@@ -50,23 +57,20 @@ void Channel::handle_event_guard_()
             error_call_back_();
         }
     }
-    // 可读事件， 挂起(写端关闭), 带外数据
-    if (revents_ & (POLLIN | POLLHUP | POLLPRI))
+    if (revents_ & (POLLIN | POLLPRI | POLLRDHUP))
     {
         if (read_call_back_)
         {
             read_call_back_();
         }
     }
-    // 可写事件
-    if (revents_ & (POLLOUT | POLLWRBAND))
+    if (revents_ & POLLOUT)
     {
         if (write_call_back_)
         {
             write_call_back_();
         }
     }
-
     event_handing_ = false;
 }
 

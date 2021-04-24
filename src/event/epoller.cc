@@ -18,7 +18,7 @@ Epoller::~Epoller()
 
 void Epoller::poll(int timeoutMs, ChannelList *active_channels)
 {
-    int cnt = epoll_wait(epollfd_, &*events_.data(), static_cast<int>(events_.size()), timeoutMs);
+    int cnt = epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMs);
     int saved_errno = errno;
     if (cnt > 0)
     {
@@ -69,7 +69,6 @@ void Epoller::update_channel(Channel *channel)
     if (status == static_cast<int>(POLL_TAG::NEW) || status == static_cast<int>(POLL_TAG::DEL))
     {
         // 如果channel没有加入到map中, 需要加入
-        channel->set_status(static_cast<int>(POLL_TAG::ADD));
         int fd = channel->fd();
         if (status == static_cast<int>(POLL_TAG::NEW))
         {

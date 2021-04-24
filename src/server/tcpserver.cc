@@ -66,7 +66,7 @@ void TcpServer::new_connection(int sockfd, const InetAddress &peer_address)
 
     conn->set_connection_cb(connection_cb_);
     conn->set_message_cb(message_cb_);
-    conn->set_close_cb(std::bind(&TcpServer::remove_connection, this, conn));
+    conn->set_close_cb(std::bind(&TcpServer::remove_connection, this, std::placeholders::_1));
     conn->set_write_complete_cb(write_complete_cb_);
 
     loop->run_in_loop(std::bind(&TcpConnection::build_connect, conn));

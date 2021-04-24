@@ -75,7 +75,7 @@ private:
     int events_;
     int revents_;
     int status_;
-    bool tied_;
+    bool tied_{false};
     std::weak_ptr<void> tie_;
 
     bool event_handing_{false};

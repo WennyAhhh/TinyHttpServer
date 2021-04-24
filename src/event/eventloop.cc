@@ -93,7 +93,7 @@ void EventLoop::loop()
     while (!quit_)
     {
         active_channels_.clear();
-        active_channels_.shrink_to_fit();
+        // active_channels_.shrink_to_fit();
         poller_->poll(PollTimeMs, &active_channels_);
         // 因为返回的是指针， 用引用好像有些不合适
         for (Channel *channel : active_channels_)
@@ -153,7 +153,7 @@ void EventLoop::queue_in_loop(Functor cb)
 {
     {
         std::lock_guard<std::mutex> lk(mtx_);
-        pending_func_.push_back(cb);
+        pending_func_.push_back(std::move(cb));
     }
     if (!is_in_loop_thread() || calling_)
     {

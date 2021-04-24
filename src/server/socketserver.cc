@@ -21,7 +21,7 @@ int create_listenfd(sa_family_t family)
 void SocketServer::bind(const InetAddress &addr)
 {
     const sockaddr *address = addr.get_addr();
-    int ret = ::bind(sockfd_, address, sizeof(*address));
+    int ret = ::bind(sockfd_, address, static_cast<socklen_t>(sizeof(sockaddr_in)));
     if (ret < 0)
     {
         LOG_WARN("sockets::bind");
