@@ -1,83 +1,41 @@
-#pragma once
-#ifndef HTTPCONTEXT_H
-#define HTTPCONTEXT_H
+#ifndef HTTP_CONN_H
+#define HTTP_CONN_H
 
-#include <unordered_map>
-#include <unordered_set>
-#include <string>
-#include <regex>
+#include <sys/types.h>
+#include <sys/uio.h>   // readv/writev
+#include <arpa/inet.h> // sockaddr_in
+#include <stdlib.h>    // atoi()
 #include <errno.h>
-#include <mysql/mysql.h>
 
-#include "base/buffer.h"
 #include "base/log.h"
-#include "httpresponse.h"
-#include "sql/sqlconnpool.h"
 #include "sql/sqlconnRAII.h"
+#include "base/buffer.h"
+#include "httprequest.h"
+#include "httpresponse.h"
 
 class HttpContext
 {
 public:
-    enum PARSE_STATE
-    {
-        REQUEST_LINE,
-        HEADERS,
-        BODY,
-        FINISH,
-    };
+    HttpContext() = default;
 
-    enum HTTP_CODE
-    {
-        NO_REQUEST = 0,
-        GET_REQUEST,
-        BAD_REQUEST,
-        NO_RESOURSE,
-        FORBIDDENT_REQUEST,
-        FILE_REQUEST,
-        INTERNAL_ERROR,
-        CLOSED_CONNECTION,
-    };
+    ~HttpContext() = default;
 
-    HttpContext() { Init(); }
-    ~HttpContext() {}
+    void init();
 
-    void Init();
-    bool parse(Buffer *buff);
+    ssize_t read(Buffer *buff);
 
-    std::string path() const;
-    std::string &path();
-    std::string method() const;
-    std::string version() const;
-    std::string GetPost(const std::string &key) const;
-    std::string GetPost(const char *key) const;
+    Buffer &write();
 
-    bool IsKeepAlive() const;
+    bool process();
 
-    /* 
-    todo 
-    void HttpConn::ParseFormData() {}
-    void HttpConn::ParseJson() {}
-    */
+    static const char *srcDir;
 
 private:
-    bool ParseRequestLine_(const std::string &line);
-    void ParseHeader_(const std::string &line);
-    void ParseBody_(const std::string &line);
+    Buffer readBuff_;  // 读缓冲区
+    Buffer writeBuff_; // 写缓冲区
 
-    void ParsePath_();
-    void ParsePost_();
-    void ParseFromUrlencoded_();
-
-    static bool UserVerify(const std::string &name, const std::string &pwd, bool isLogin);
-
-    PARSE_STATE state_;
-    std::string method_, path_, version_, body_;
-    std::unordered_map<std::string, std::string> header_;
-    std::unordered_map<std::string, std::string> post_;
-
-    static const std::unordered_set<std::string> DEFAULT_HTML;
-    static const std::unordered_map<std::string, int> DEFAULT_HTML_TAG;
-    static int ConverHex(char ch);
+    HttpRequest request_;
+    HttpResponse response_;
 };
 
-#endif
+#endif //HTTP_CONN_H

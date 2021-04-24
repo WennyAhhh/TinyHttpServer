@@ -7,7 +7,6 @@
 #include "server/entry.h"
 #include "event/eventloop.h"
 #include "http/httpcontext.h"
-#include "http/httpresponse.h"
 
 #include <boost/circular_buffer.hpp>
 #include <vector>
@@ -58,6 +57,7 @@ public:
     {
         std::string pwd = std::string(::getcwd(nullptr, 256));
         src_dir_ = pwd + std::string(dir);
+        HttpContext::srcDir = src_dir_.data();
     }
 
     void set_thread_num(int thread_num) { tcpserver_->set_thread_num(thread_num); }

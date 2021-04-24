@@ -9,6 +9,7 @@
 
 #include "base/buffer.h"
 #include "inetaddress.h"
+#include "http/httpcontext.h"
 
 class Channel;
 class EventLoop;
@@ -49,10 +50,10 @@ public:
     const std::string &get_name() const { return name_; }
     const InetAddress &get_local_address() const { return local_addr_; }
     const InetAddress &get_peer_address() const { return peer_addr_; }
-    const std::any &get_context() const { return context_; }
-    std::any *get_context_ptr() { return &context_; }
+    const HttpContext &get_context() const { return context_; }
+    HttpContext *get_context_ptr() { return &context_; }
     const std::any &get_entry() const { return entry_; }
-    std::any *get_entry() { return &entry_; }
+    std::any *get_entry_ptr() { return &entry_; }
 
     bool is_connected() const { return status_ == Status::CONNECTED; }
 
@@ -68,7 +69,7 @@ public:
     bool is_reading() const { return reading_; }
 
     void set_entry(const std::any &entry) { entry_ = entry; }
-    void set_context(const std::any &context) { context_ = context; }
+    // void set_context(const std::any &context) { context_ = context; }
     void set_connection_cb(const ConnectionCallback &cb) { connection_cb_ = cb; }
     void set_message_cb(const MessageCallback &cb) { message_cb_ = cb; }
     void set_write_complete_cb(const WriteCompleteCallback &cb) { write_complete_cb_ = cb; }
@@ -132,7 +133,7 @@ private:
     size_t high_water_mark_;
     Buffer input_buffer_;
     Buffer output_buffer_;
-    std::any context_;
+    HttpContext context_;
     std::any entry_;
 };
 

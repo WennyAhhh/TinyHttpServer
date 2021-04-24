@@ -14,7 +14,7 @@
 #include "sql/sqlconnpool.h"
 #include "sql/sqlconnRAII.h"
 
-class HttpContext
+class HttpRequest
 {
 public:
     enum PARSE_STATE
@@ -37,11 +37,11 @@ public:
         CLOSED_CONNECTION,
     };
 
-    HttpContext() { Init(); }
-    ~HttpContext() {}
+    HttpRequest() { Init(); }
+    ~HttpRequest() {}
 
     void Init();
-    bool parse(Buffer *buff);
+    bool parse(Buffer &buff);
 
     std::string path() const;
     std::string &path();

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const unordered_set<string> HttpContext::DEFAULT_HTML{
+const unordered_set<string> HttpRequest::DEFAULT_HTML{
     "/index",
     "/register",
     "/login",
@@ -11,12 +11,12 @@ const unordered_set<string> HttpContext::DEFAULT_HTML{
     "/picture",
 };
 
-const unordered_map<string, int> HttpContext::DEFAULT_HTML_TAG{
+const unordered_map<string, int> HttpRequest::DEFAULT_HTML_TAG{
     {"/register.html", 0},
     {"/login.html", 1},
 };
 
-void HttpContext::Init()
+void HttpRequest::Init()
 {
     method_ = path_ = version_ = body_ = "";
     state_ = REQUEST_LINE;
@@ -24,7 +24,7 @@ void HttpContext::Init()
     post_.clear();
 }
 
-bool HttpContext::IsKeepAlive() const
+bool HttpRequest::IsKeepAlive() const
 {
     if (header_.count("Connection") == 1)
     {
@@ -33,17 +33,17 @@ bool HttpContext::IsKeepAlive() const
     return false;
 }
 
-bool HttpContext::parse(Buffer *buff)
+bool HttpRequest::parse(Buffer &buff)
 {
     const char CRLF[] = "\r\n";
-    if (buff->read_able_bytes() <= 0)
+    if (buff.read_able_bytes() <= 0)
     {
         return false;
     }
-    while (buff->read_able_bytes() && state_ != FINISH)
+    while (buff.read_able_bytes() && state_ != FINISH)
     {
-        const char *lineEnd = search(buff->peek(), buff->begin_write_const(), CRLF, CRLF + 2);
-        std::string line(buff->peek(), lineEnd);
+        const char *lineEnd = search(buff.peek(), buff.begin_write_const(), CRLF, CRLF + 2);
+        std::string line(buff.peek(), lineEnd);
         LOG_INFO("readbuff length %zu  %s", line.size(), line.data());
         switch (state_)
         {
@@ -56,7 +56,7 @@ bool HttpContext::parse(Buffer *buff)
             break;
         case HEADERS:
             ParseHeader_(line);
-            if (buff->read_able_bytes() <= 2)
+            if (buff.read_able_bytes() <= 2)
             {
                 state_ = FINISH;
             }
@@ -67,17 +67,17 @@ bool HttpContext::parse(Buffer *buff)
         default:
             break;
         }
-        if (lineEnd == buff->begin_write())
+        if (lineEnd == buff.begin_write())
         {
             break;
         }
-        buff->retrieve_unitil(lineEnd + 2);
+        buff.retrieve_unitil(lineEnd + 2);
     }
     LOG_DEBUG("[%s], [%s], [%s]", method_.c_str(), path_.c_str(), version_.c_str());
     return true;
 }
 
-void HttpContext::ParsePath_()
+void HttpRequest::ParsePath_()
 {
     if (path_ == "/")
     {
@@ -96,7 +96,7 @@ void HttpContext::ParsePath_()
     }
 }
 
-bool HttpContext::ParseRequestLine_(const string &line)
+bool HttpRequest::ParseRequestLine_(const string &line)
 {
     regex patten("^([^ ]*) ([^ ]*) HTTP/([^ ]*)$");
     smatch subMatch;
@@ -115,7 +115,7 @@ bool HttpContext::ParseRequestLine_(const string &line)
     return false;
 }
 
-void HttpContext::ParseHeader_(const string &line)
+void HttpRequest::ParseHeader_(const string &line)
 {
     regex patten("^([^:]*): ?(.*)$");
     smatch subMatch;
@@ -129,7 +129,7 @@ void HttpContext::ParseHeader_(const string &line)
     }
 }
 
-void HttpContext::ParseBody_(const string &line)
+void HttpRequest::ParseBody_(const string &line)
 {
     body_ = line;
     ParsePost_();
@@ -137,7 +137,7 @@ void HttpContext::ParseBody_(const string &line)
     LOG_DEBUG("Body:%s, len:%zu", line.c_str(), line.size());
 }
 
-int HttpContext::ConverHex(char ch)
+int HttpRequest::ConverHex(char ch)
 {
     if (ch >= 'A' && ch <= 'F')
         return ch - 'A' + 10;
@@ -146,7 +146,7 @@ int HttpContext::ConverHex(char ch)
     return ch;
 }
 
-void HttpContext::ParsePost_()
+void HttpRequest::ParsePost_()
 {
     if (method_ == "POST" && header_["Content-Type"] == "application/x-www-form-urlencoded")
     {
@@ -171,7 +171,7 @@ void HttpContext::ParsePost_()
     }
 }
 
-void HttpContext::ParseFromUrlencoded_()
+void HttpRequest::ParseFromUrlencoded_()
 {
     if (body_.size() == 0)
     {
@@ -219,7 +219,7 @@ void HttpContext::ParseFromUrlencoded_()
     }
 }
 
-bool HttpContext::UserVerify(const string &name, const string &pwd, bool isLogin)
+bool HttpRequest::UserVerify(const string &name, const string &pwd, bool isLogin)
 {
     if (name == "" || pwd == "")
     {
@@ -297,26 +297,26 @@ bool HttpContext::UserVerify(const string &name, const string &pwd, bool isLogin
     return flag;
 }
 
-std::string HttpContext::path() const
+std::string HttpRequest::path() const
 {
     return path_;
 }
 
-std::string &HttpContext::path()
+std::string &HttpRequest::path()
 {
     return path_;
 }
-std::string HttpContext::method() const
+std::string HttpRequest::method() const
 {
     return method_;
 }
 
-std::string HttpContext::version() const
+std::string HttpRequest::version() const
 {
     return version_;
 }
 
-std::string HttpContext::GetPost(const std::string &key) const
+std::string HttpRequest::GetPost(const std::string &key) const
 {
     assert(key != "");
     if (post_.count(key) == 1)
@@ -326,7 +326,7 @@ std::string HttpContext::GetPost(const std::string &key) const
     return "";
 }
 
-std::string HttpContext::GetPost(const char *key) const
+std::string HttpRequest::GetPost(const char *key) const
 {
     assert(key != nullptr);
     if (post_.count(key) == 1)
