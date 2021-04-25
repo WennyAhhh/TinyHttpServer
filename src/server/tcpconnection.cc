@@ -38,6 +38,7 @@ TcpConnection::TcpConnection(EventLoop *loop,
       peer_addr_(peer_address),
       high_water_mark_(64 * 1024 * 1024) // 一次最多传输64M
 {
+    context_.init();
     channel_->set_read_cb(std::bind(&TcpConnection::handle_read_, this));
     channel_->set_write_cb(std::bind(&TcpConnection::handle_write_, this));
     channel_->set_close_cb(std::bind(&TcpConnection::handle_close_, this));
@@ -51,11 +52,11 @@ TcpConnection::TcpConnection(EventLoop *loop,
 
 TcpConnection::~TcpConnection()
 {
-    LOG_DEBUG("TcpConnection::~TcpConnection[ %s ] at %p fd = %d status = %s",
-              name_.data(),
-              this,
-              channel_->fd(),
-              status_str[status_].data());
+    // LOG_DEBUG("TcpConnection::~TcpConnection[ %s ] at %p fd = %d status = %s",
+    //           name_.data(),
+    //           this,
+    //           channel_->fd(),
+    //           status_str[status_].data());
     assert(status_ == Status::DISCONNECTED);
 }
 
@@ -188,8 +189,14 @@ void TcpConnection::handle_write_()
     loop_->assert_in_loop();
     if (channel_->is_writing())
     {
-        int save_errno = 0;
-        ssize_t n = output_buffer_.write_fd(channel_->fd(), &save_errno);
+        // int save_errno = 0;
+        // ssize_t n = output_buffer_.write_fd(channel_->fd(), &save_errno);
+        // while (output_buffer_.read_able_bytes() > 0)
+        // {
+        ssize_t n = ::write(channel_->fd(), output_buffer_.peek(), output_buffer_.read_able_bytes());
+        //     output_buffer_.retrieve(n);
+        // }
+        // channel_->disable_writing();
         // 可以在buffer里面写数据
         if (n > 0)
         {
@@ -204,6 +211,7 @@ void TcpConnection::handle_write_()
                 if (status_ == Status::DISCONNECTING)
                 {
                     // 最后一次写数据， 配合优雅关闭
+                    printf("shutdown\n");
                     shutdown_in_loop_();
                 }
             }
@@ -237,6 +245,15 @@ void TcpConnection::handle_error_()
 void TcpConnection::send_in_loop_(const void *data, size_t len)
 {
     loop_->assert_in_loop();
+    // if (len > 0)
+    // {
+    //     output_buffer_.append(static_cast<const char *>(data), len);
+    //     if (!channel_->is_writing())
+    //     {
+    //         channel_->enable_writing();
+    //     }
+    // }
+
     ssize_t nwrote = 0;
     size_t remaining = len;
     bool fault_error = false;
@@ -249,7 +266,6 @@ void TcpConnection::send_in_loop_(const void *data, size_t len)
     if (!channel_->is_writing() && output_buffer_.read_able_bytes() == 0)
     {
         nwrote = ::send(channel_->fd(), data, len, 0);
-        LOG_DEBUG("reading %zu, nwrote %zu", len, nwrote);
         // nwrote = ::write(channel_->fd(), data, len);
         if (nwrote >= 0)
         {

@@ -11,6 +11,7 @@ int setnonblocking(int fd)
 int create_listenfd(sa_family_t family)
 {
     int listenfd_ = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+    // setnonblocking(listenfd_);
     if (listenfd_ < 0)
     {
         LOG_ERROR("Acceptor listenfd");
@@ -66,6 +67,7 @@ int SocketServer::accept(InetAddress &peeraddr)
     memset(&client, 0, sizeof client);
     socklen_t client_addrlength = sizeof client;
     int connfd = ::accept(sockfd_, reinterpret_cast<sockaddr *>(&client), &client_addrlength);
+    setnonblocking(connfd);
     if (connfd < 0)
     {
         int savedErrno = errno;

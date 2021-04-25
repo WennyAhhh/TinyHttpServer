@@ -48,4 +48,5 @@ void EventLoopThread::thread_func_()
     loop_.store(&loop);
     loop.loop();
     loop_.store(nullptr);
+    printf("exit\n");
 }

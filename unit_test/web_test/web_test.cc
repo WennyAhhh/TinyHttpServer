@@ -16,7 +16,7 @@ int main()
     HttpServer server(&loop, listenAddr, "tcpserver", true);
     char dir[] = "/resources/";
     server.set_dir(dir);
-    server.set_thread_num(5);
+    server.set_thread_num(6);
     server.start();
 
     loop.loop();

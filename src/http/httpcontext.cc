@@ -14,6 +14,7 @@ ssize_t HttpContext::read(Buffer *buff)
 {
     ssize_t len = -1;
     readBuff_.append(buff->retrieve_all_string());
+    // readBuff_.swap(*buff);
     process();
     return readBuff_.read_able_bytes();
 }

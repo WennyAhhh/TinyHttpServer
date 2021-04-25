@@ -25,11 +25,7 @@ public:
     }
     Buffer(const Buffer &) = delete;
     Buffer &operator=(const Buffer &) = delete;
-    ~Buffer()
-    {
-        printf("debug");
-    }
-
+    ~Buffer() {}
     // 类的访问控制是针对类， 而不是针对对象
     void swap(Buffer &rhs) noexcept
     {

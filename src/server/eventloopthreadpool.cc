@@ -21,7 +21,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb)
         std::string thread_name = name_ + "_" + std::to_string(i);
         auto thread_event_loop = std::make_unique<EventLoopThread>(cb, thread_name);
         loops_.push_back(thread_event_loop->start_loop());
-        threads_.emplace_back(std::move(thread_event_loop));
+        threads_.push_back(std::move(thread_event_loop));
     }
     if (num_threads_ == 0)
     {

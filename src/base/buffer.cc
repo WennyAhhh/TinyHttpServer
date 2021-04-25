@@ -14,11 +14,11 @@ void Buffer::makespace(size_t len)
         // std::copy(begin() + reader_index_,
         //           begin() + writer_index_,
         //           begin() + cheap_prepend);
-        memmove(begin_() + cheap_prepend,
-                begin_() + reader_index_,
-                writer_index_ - cheap_prepend);
+        std::copy(begin_() + reader_index_,
+                  begin_() + writer_index_,
+                  begin_() + cheap_prepend);
         reader_index_ = cheap_prepend;
-        writer_index_ = cheap_prepend + readable;
+        writer_index_ = reader_index_ + readable;
         assert(readable == read_able_bytes());
     }
 }

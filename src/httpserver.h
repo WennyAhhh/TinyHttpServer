@@ -10,10 +10,11 @@
 
 #include <boost/circular_buffer.hpp>
 #include <vector>
+#include <unordered_set>
 
 typedef std::shared_ptr<Entry> EntryPtr;
 typedef std::weak_ptr<Entry> WeakEntryPtr;
-typedef std::vector<EntryPtr> Bucket;
+typedef std::unordered_set<EntryPtr> Bucket;
 typedef boost::circular_buffer<Bucket> WeakConnectionList;
 
 class HttpServer
@@ -25,20 +26,20 @@ public:
                bool option = true)
         : loop_(loop),
           tcpserver_(std::make_unique<TcpServer>(loop, listen_address, name_arg, option)),
-          connection_list_(90)
+          connection_list_(3)
     {
         //   connection_list_
-        connection_list_.resize(90);
+        connection_list_.resize(3);
         tcpserver_->set_message_cb(std::bind(&HttpServer::message_cb, this, std::placeholders::_1, std::placeholders::_2));
         tcpserver_->set_connection_cb(std::bind(&HttpServer::connection_cb, this, std::placeholders::_1));
         tcpserver_->set_thread_init_cb_(std::bind(&HttpServer::init_cb, this, std::placeholders::_1));
+        loop_->run_after(1, std::bind(&HttpServer::ontime, this));
     }
 
     void start()
     {
         tcpserver_->start();
         // repeat
-        loop_->run_after(1, std::bind(&HttpServer::ontime, this));
         loop_->run_after(5, std::bind(&Log::loading, Log::instance()));
     }
 

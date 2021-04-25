@@ -44,7 +44,6 @@ bool HttpRequest::parse(Buffer &buff)
     {
         const char *lineEnd = search(buff.peek(), buff.begin_write_const(), CRLF, CRLF + 2);
         std::string line(buff.peek(), lineEnd);
-        LOG_INFO("readbuff length %zu  %s", line.size(), line.data());
         switch (state_)
         {
         case REQUEST_LINE:
@@ -103,11 +102,8 @@ bool HttpRequest::ParseRequestLine_(const string &line)
     if (regex_match(line, subMatch, patten))
     {
         method_ = subMatch[1];
-        LOG_DEBUG("method_ %s", method_.data());
         path_ = subMatch[2];
-        LOG_DEBUG("path_ %s", path_.data());
         version_ = subMatch[3];
-        LOG_DEBUG("version_ %s", version_.data());
         state_ = HEADERS;
         return true;
     }
