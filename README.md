@@ -1,14 +1,6 @@
 # TinyHttpServer
+    根据muduo写的网络库， 定时器修改为four-heap
+    添加了httpserver, 基本实现http服务器功能
 
-## 进度
-    LOG多线程日志库， 基本功能实现， 未实现自动切换LOG文件 ctrl+c 信号
-    Buffer缓冲
-    时间堆
-    poll
-## 后续
-    线程池
-    事件队列
-    http(打算移植过来)
-    如果不考虑做成轮子， timerqueue不需要跨线程
-## 一些小问题
-    不允许减少时间
+    里面存在部分copy， QPS略低， 待优化
+    
